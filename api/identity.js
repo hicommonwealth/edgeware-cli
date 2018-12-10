@@ -37,12 +37,25 @@ export const getAllIdentities = async function () {
   return await api.query.identityStorage.identities();
 }
 
-export const getIdentity = async function (identityHash) {
+export const getIdentity = async function (identity) {
+  let identityHash = blake2AsU8a(identity);
+  return await api.query.identityStorage.identity_of(identityHash);
+}
+
+export const getIdentityByHash = async function (identityHash) {
   return await api.query.identityStorage.identity_of(identityHash);
 }
 
 export const getIdentityCount = async function () {
+  return await api.query.identityStorage.identity_count();
+}
+
+export const getLinkedIdentityCount = async function () {
   return await api.query.identityStorage.linked_count();
+}
+
+export const getClaim = async function (claimHash) {
+  return await api.query.identityStorage.claims();
 }
 
 export const getClaimsIssuers = async function () {
