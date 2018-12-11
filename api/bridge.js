@@ -1,63 +1,67 @@
-// Import the API
-const { ApiPromise } = require('@polkadot/api');
-const { TypeRegistry } = require('@polkadot/types/codec/typeRegistry')
-const { u32, Bytes } = require('@polkadot/types');
-const { blake2AsU8a } = require('@polkadot/util-crypto')
-const { Keyring } = require('@polkadot/keyring');
-const { stringToU8a } = require('@polkadot/util');
-
-export const IdentityTypes = {
-  "Claim": Bytes,
-  "IdentityIndex" : u32,
-};
-
-export const link = async function (api, user, identity, proof) {
-    // Retrieve the nonce for the user, to be used to sign the transaction
+export const deposit = async function (api, user, target, txHash, quantity) {
     const txNonce = await api.query.system.accountNonce(user.address());
-    let identityHash = blake2AsU8a(identity);
-    const link = api.tx.identity.link(identityHash, proof);
-    link.sign(user, txNonce);
-    const linkHash = await link.send();
-    console.log(`Identity ${identity} published with hash ${linkHash}`);
-    return linkHash;
+    const tx = api.tx.bridge.deposit(target, txHash, quantity);
+    tx.sign(user, txNonce);
+    const txHash = await tx.send();
+    return txHash;
 }
 
-export const publish = async function (api, user, identity) {
-    // Retrieve the nonce for Alice, to be used to sign the transaction
+const export signDeposit = async function (api, user, target, txHash, quantity) {
     const txNonce = await api.query.system.accountNonce(user.address());
-    let identityHash = blake2AsU8a(identity);
-    const publish = api.tx.identity.publish(identityHash);
-    publish.sign(user, txNonce);
-    const pubHash = await publish.send();
-    console.log(`Identity ${identity} published with hash ${pubHash}`);
-    return pubHash;
+    const tx = api.tx.bridge.sign_deposit(target, txHash, quantity);
+    tx.sign(user, txNonce);
+    const txHash = await tx.send();
+    return txHash;
 }
 
-export const getAllIdentities = async function () {
-  return await api.query.identityStorage.identities();
+const export withdraw = async function (api, user, quantity, signedCrossChainTx) {
+    const txNonce = await api.query.system.accountNonce(user.address());
+    const tx = api.tx.bridge.sign_deposit(quantity, signedCrossChainTx);
+    tx.sign(user, txNonce);
+    const txHash = await tx.send();
+    return txHash;
 }
 
-export const getIdentity = async function (identity) {
-  let identityHash = blake2AsU8a(identity);
-  return await api.query.identityStorage.identity_of(identityHash);
+const export signWithdraw = async function (api, user, target, recordHash, quantity, signedCrossChainTx) {
+    const txNonce = await api.query.system.accountNonce(user.address());
+    const tx = api.tx.bridge.sign_deposit(target, recordHash, quantity, signedCrossChainTx);
+    tx.sign(user, txNonce);
+    const txHash = await tx.send();
+    return txHash;
 }
 
-export const getIdentityByHash = async function (identityHash) {
-  return await api.query.identityStorage.identity_of(identityHash);
+export const getBlockHeaders = async function (nameHash) {
+    return await api.query.bridgeStorage.block_headers(nameHash);
 }
 
-export const getIdentityCount = async function () {
-  return await api.query.identityStorage.identity_count();
+export const getAuthorities = async function () {
+    return await api.query.bridgeStorage.authorities();
 }
 
-export const getLinkedIdentityCount = async function () {
-  return await api.query.identityStorage.linked_count();
+export const getDepositCount = async function () {
+    return await api.query.bridgeStorage.deposit_count();
 }
 
-export const getClaim = async function (claimHash) {
-  return await api.query.identityStorage.claims();
+export const getDeposits = async function () {
+    return await api.query.bridgeStorage.deposits();
 }
 
-export const getClaimsIssuers = async function () {
-  return await api.query.identityStorage.claims_issuers();
+export const getDepositByHash = async function (depositHash) {
+    return await api.query.bridgeStorage.deposit_of(depositHash);
+}
+
+export const getWithdrawCount = async function () {
+    return await api.query.bridgeStorage.withdraw_count();
+}
+
+export const getWithdraws = async function () {
+    return await api.query.bridgeStorage.withdraws();
+}
+
+export const getWithdrawByHash = async function (withdrawHash) {
+    return await api.query.bridgeStorage.withdraw_of(withdrawHash);
+}
+
+export const getWithdrawNonce = async function (user) {
+    return await api.query.bridgeStorage.withdraw_nonce_of(user);
 }

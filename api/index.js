@@ -1,5 +1,9 @@
 import { IdentityTypes } from './identity';
 
+const { ApiPromise } = require('@polkadot/api');
+const { stringToU8a } = require('@polkadot/util');
+const { Keyring } = require('@polkadot/keyring');
+
 export const init = async function() {
   // Create an instance of the keyring
   keyring = new Keyring();
