@@ -27,7 +27,7 @@ export const addComment = async function (api, user, proposalHash, comment) {
 export const vote = async function (api, user, proposalHash, voteBool) {
   // Retrieve the nonce for the user, to be used to sign the transaction
   const txNonce = await api.query.system.accountNonce(user.address());
-  const vote_tx = api.tx.governance.add_comment(proposalHash, voteBool);
+  const vote_tx = api.tx.governance.vote(proposalHash, voteBool);
   vote_tx.sign(user, txNonce);
   const voteHash = await vote_tx.send();
   console.log(`Vote ${vote} for proposal ${proposalHash} published with hash ${voteHash}`);
