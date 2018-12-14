@@ -14,7 +14,7 @@ export const createProposal = async function (api, user, proposal, category) {
   return propHash;
 }
 
-export const add_comment = async function (api, user, proposalHash, comment) {
+export const addComment = async function (api, user, proposalHash, comment) {
   // Retrieve the nonce for the user, to be used to sign the transaction
   const txNonce = await api.query.system.accountNonce(user.address());
   const comment = api.tx.governance.add_comment(proposalHash, comment);
