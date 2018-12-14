@@ -14,7 +14,7 @@ export const createProposal = async function (api, user, proposal, category) {
   return propHash;
 }
 
-export const add_comment(api, user, proposalHash, comment) {
+export const add_comment = async function (api, user, proposalHash, comment) {
   // Retrieve the nonce for the user, to be used to sign the transaction
   const txNonce = await api.query.system.accountNonce(user.address());
   const comment = api.tx.governance.add_comment(proposalHash, comment);
@@ -22,6 +22,17 @@ export const add_comment(api, user, proposalHash, comment) {
   const commentHash = await comment.send();
   console.log(`Common ${comment} published with hash ${commentHash}`);
   return commentHash;
+}
+
+export const vote = async function (api, user, proposalHash, voteBool) {
+  // Retrieve the nonce for the user, to be used to sign the transaction
+  const txNonce = await api.query.system.accountNonce(user.address());
+  const vote_tx = api.tx.governance.add_comment(proposalHash, voteBool);
+  vote_tx.sign(user, txNonce);
+  const voteHash = await vote_tx.send();
+  console.log(`Vote ${vote} for proposal ${proposalHash} published with hash ${voteHash}`);
+  return voteHash;
+
 }
 
 export const getProposals = async function (api) {
@@ -36,3 +47,8 @@ export const getProposalByHash = async function (api, proposalHash) {
   return await api.query.governanceStorage.proposal_of(proposalHash);
 }
 
+export const getProposal = async function (api, account, proposal) {
+  let input = account.concat(proposal);
+  let proposalHash = blake2AsU8a(input);
+  return await getProposalByHash(api, proposalHash);
+}
