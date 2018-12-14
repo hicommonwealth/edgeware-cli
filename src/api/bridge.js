@@ -30,38 +30,38 @@ const export signWithdraw = async function (api, user, target, recordHash, quant
     return txHash;
 }
 
-export const getBlockHeaders = async function (nameHash) {
+export const getBlockHeaders = async function (api, nameHash) {
     return await api.query.bridgeStorage.block_headers(nameHash);
 }
 
-export const getAuthorities = async function () {
+export const getAuthorities = async function (api) {
     return await api.query.bridgeStorage.authorities();
 }
 
-export const getDepositCount = async function () {
+export const getDepositCount = async function (api) {
     return await api.query.bridgeStorage.deposit_count();
 }
 
-export const getDeposits = async function () {
+export const getDeposits = async function (api) {
     return await api.query.bridgeStorage.deposits();
 }
 
-export const getDepositByHash = async function (depositHash) {
+export const getDepositByHash = async function (api, depositHash) {
     return await api.query.bridgeStorage.deposit_of(depositHash);
 }
 
-export const getWithdrawCount = async function () {
+export const getWithdrawCount = async function (api) {
     return await api.query.bridgeStorage.withdraw_count();
 }
 
-export const getWithdraws = async function () {
+export const getWithdraws = async function (api) {
     return await api.query.bridgeStorage.withdraws();
 }
 
-export const getWithdrawByHash = async function (withdrawHash) {
+export const getWithdrawByHash = async function (api, withdrawHash) {
     return await api.query.bridgeStorage.withdraw_of(withdrawHash);
 }
 
-export const getWithdrawNonce = async function (user) {
+export const getWithdrawNonce = async function (api, user) {
     return await api.query.bridgeStorage.withdraw_nonce_of(user);
 }
