@@ -29,31 +29,31 @@ export const publish = async function (api, user, identity) {
     return pubHash;
 }
 
-export const getAllIdentities = async function () {
+export const getAllIdentities = async function (api) {
   return await api.query.identityStorage.identities();
 }
 
-export const getIdentity = async function (identity) {
+export const getIdentity = async function (api, identity) {
   let identityHash = blake2AsU8a(identity);
   return await api.query.identityStorage.identity_of(identityHash);
 }
 
-export const getIdentityByHash = async function (identityHash) {
+export const getIdentityByHash = async function (api, identityHash) {
   return await api.query.identityStorage.identity_of(identityHash);
 }
 
-export const getIdentityCount = async function () {
+export const getIdentityCount = async function (api) {
   return await api.query.identityStorage.identity_count();
 }
 
-export const getLinkedIdentityCount = async function () {
+export const getLinkedIdentityCount = async function (api) {
   return await api.query.identityStorage.linked_count();
 }
 
-export const getClaim = async function (claimHash) {
+export const getClaim = async function (api, claimHash) {
   return await api.query.identityStorage.claims();
 }
 
-export const getClaimsIssuers = async function () {
+export const getClaimsIssuers = async function (api) {
   return await api.query.identityStorage.claims_issuers();
 }
