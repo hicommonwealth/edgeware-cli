@@ -1,26 +1,18 @@
 import { IdentityTypes } from './identity';
-
+import { GovernanceTypes } from './governance'
+const { Bytes, AccountId } = require('@polkadot/types');
 const { ApiPromise } = require('@polkadot/api');
-const { stringToU8a } = require('@polkadot/util');
-const { Keyring } = require('@polkadot/keyring');
 
 export const init = async function() {
-  // Create an instance of the keyring
-  var keyring = new Keyring();
-
-  const ALICE_SEED = 'Alice'.padEnd(32, ' ');
-
-  // Add Alice to our keyring (with the known seed for the account)
-  var alice = keyring.addFromSeed(stringToU8a(ALICE_SEED));
-
   // Create our API with a default connection to the local node
   var options = {
       additionalTypes : {
           ...IdentityTypes,
+          ...GovernanceTypes,
       }
   };
 
-  var api = await new ApiPromise(options).isReady;
+  var api = await ApiPromise.create(options);
   console.log(api);
   return api;
 }

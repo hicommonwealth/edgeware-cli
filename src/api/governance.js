@@ -1,26 +1,44 @@
 // Import the API
-const { u32, Bytes } = require('@polkadot/types');
+const { EnumType } = require('@polkadot/types/codec');
+const { Null } = require('@polkadot/types');
 const { blake2AsU8a } = require('@polkadot/util-crypto')
 
-export const GovernanceTypes = {};
+class Referendum extends Null { }
+class Funding extends Null { }
+class NetworkChange extends Null { }
+
+class ProposalCategory extends EnumType<Referendum | Funding | NetworkChange> {
+  constructor (value, index) {
+      super([
+          Referendum,
+          Funding,
+          NetworkChange
+      ], value, index);
+  }
+}
+
+export const GovernanceTypes = {
+    "ProposalCategory": ProposalCategory
+};
 
 export const createProposal = async function (api, user, proposal, category) {
   // Retrieve the nonce for the user, to be used to sign the transaction
   const txNonce = await api.query.system.accountNonce(user.address());
-  const prop = api.tx.governance.create_proposal(proposal, category);
+  console.log("NONCE: ", txNonce);
+  const prop = api.tx.governance.createProposal(proposal, category);
   prop.sign(user, txNonce);
   const propHash = await prop.send();
   console.log(`Proposal ${proposal} published with hash ${propHash}`);
   return propHash;
 }
 
-export const addComment = async function (api, user, proposalHash, comment) {
+export const addComment = async function (api, user, proposalHash, commentText) {
   // Retrieve the nonce for the user, to be used to sign the transaction
   const txNonce = await api.query.system.accountNonce(user.address());
-  const comment = api.tx.governance.add_comment(proposalHash, comment);
+  const comment = api.tx.governance.addComment(proposalHash, commentText);
   comment.sign(user, txNonce);
   const commentHash = await comment.send();
-  console.log(`Common ${comment} published with hash ${commentHash}`);
+  console.log(`Common ${commentText} published with hash ${commentHash}`);
   return commentHash;
 }
 
