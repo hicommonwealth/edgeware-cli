@@ -13,6 +13,6 @@ export const init = async function() {
   };
 
   var api = await ApiPromise.create(options);
-  console.log(api);
+
   return api;
 }
