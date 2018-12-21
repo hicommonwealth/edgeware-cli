@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import logo from './logo.svg';
 import './App.css';
 import { init } from './api';
-import { getProposals, createProposal } from './api/governance';
+import { getProposals, getProposalByHash, createProposal } from './api/governance';
 const { stringToU8a } = require('@polkadot/util');
 const { Keyring } = require('@polkadot/keyring');
 
@@ -12,8 +12,8 @@ class ProposalList extends Component {
       <div>
         <ul>
           {
-            this.props.proposals.map(function(hash) {
-              return <li>{hash}</li>;
+            this.props.proposals.map(function(proposal, idx) {
+              return <li>{idx}: {proposal}</li>;
             })
           }
         </ul>
@@ -31,7 +31,7 @@ class App extends Component {
     };
 
     this.api = null;
-    init().then(function(api) { this.api = api }.bind(this));
+    init().then(function(api) { this.api = api; console.log("API READY") }.bind(this));
   }
 
   handleSubmit = async event => {
@@ -49,10 +49,14 @@ class App extends Component {
   };
 
   handleUpdateProposals = async event => {
-      var proposals = await getProposals(this.api);
+      var api = this.api;
+      var proposalHashes = await getProposals(api);
+      var proposals = await Promise.all(proposalHashes.map(function (hash) {
+        return getProposalByHash(api, hash);
+      }));
       console.log(proposals);
       this.setState({
-          proposals: proposals
+          proposals: proposals.map(function (proposal) { return proposal.contents })
       });
   };
 
