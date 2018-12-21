@@ -1,6 +1,6 @@
 {
   "name": "edge_api_standard",
-  "version": "0.2.1",
+  "version": "0.2.2",
   "dependencies": {
     "@polkadot/api": "^0.35.9",
     "react": "^16.6.3",
@@ -23,7 +23,8 @@
     "not ie <= 11",
     "not op_mini all"
   ],
+  "main": "src/api/index.js",
   "files": [
-    "src/api/*"
+      "src/api/*"
   ]
 }
