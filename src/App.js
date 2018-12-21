@@ -39,13 +39,13 @@ class App extends Component {
     this.keyring = new Keyring();
 
     const ALICE_SEED = 'Alice'.padEnd(32, ' ');
-  
+
     // Add Alice to our keyring (with the known seed for the account)
     var alice = this.keyring.addFromSeed(stringToU8a(ALICE_SEED));
 
     console.log("Submit pressed on proposal: '" + this.state.proposalValue + "'");
-    //createProposal(api, this.alice, this.state.proposalValue, "Funding");
-    console.log(await this.api.query.system.accountNonce(alice.address()));
+    await createProposal(this.api, alice, this.state.proposalValue, "Funding");
+    // console.log(await this.api.query.system.accountNonce(alice.address()));
   };
 
   handleUpdateProposals = async event => {
