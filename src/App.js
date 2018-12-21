@@ -8,15 +8,19 @@ const { Keyring } = require('@polkadot/keyring');
 
 class ProposalList extends Component {
   render() {
+    var styling = {
+      margin: "4px auto",
+      display: "table",
+    };
     return (
       <div>
-        <ul>
+        <ol style={styling}>
           {
             this.props.proposals.map(function(proposal, idx) {
-              return <li>{idx}: {proposal}</li>;
+              return <li key={idx}>{proposal}</li>;
             })
           }
-        </ul>
+        </ol>
       </div>
     );
   }
@@ -27,11 +31,10 @@ class App extends Component {
     super(props);
     this.state = {
       proposalValue: '',
-      proposals: []
+      proposals: [],
+      apiPending: true,
+      api: null
     };
-
-    this.api = null;
-    init().then(function(api) { this.api = api; console.log("API READY") }.bind(this));
   }
 
   handleSubmit = async event => {
@@ -44,12 +47,11 @@ class App extends Component {
     var alice = this.keyring.addFromSeed(stringToU8a(ALICE_SEED));
 
     console.log("Submit pressed on proposal: '" + this.state.proposalValue + "'");
-    await createProposal(this.api, alice, this.state.proposalValue, "Funding");
-    // console.log(await this.api.query.system.accountNonce(alice.address()));
+    await createProposal(this.state.api, alice, this.state.proposalValue, "Funding");
   };
 
   handleUpdateProposals = async event => {
-      var api = this.api;
+      var api = this.state.api;
       var proposalHashes = await getProposals(api);
       var proposals = await Promise.all(proposalHashes.map(function (hash) {
         return getProposalByHash(api, hash);
@@ -60,10 +62,27 @@ class App extends Component {
       });
   };
 
-  updateInputValue(evt) {
+  updateInputValue = event => {
       this.setState({
-          proposalValue: evt.target.value
+          proposalValue: event.target.value
       });
+  }
+
+  componentDidMount() {
+    init().then(function(api) {
+      console.log("API READY");
+      this.setState({
+        apiPending: false,
+        api: api
+      })
+     }.bind(this))
+    .catch(function(err) {
+      console.log("API ERROR: ", err);
+      this.setState({
+        apiPending: true,
+        api: null
+      })
+    }.bind(this));
   }
 
   render() {
@@ -71,9 +90,9 @@ class App extends Component {
     return (
       <div className="App">
         <header />
-        <div>Proposal: <input value={this.state.proposalValue} onChange={evt => this.updateInputValue(evt)} type="text" name="proposalInput" /></div>
-        <div><button onClick={this.handleSubmit}>Submit</button></div>
-        <div><button onClick={this.handleUpdateProposals}>Update Proposals</button></div>
+        <div>Proposal: <input value={this.state.proposalValue} onChange={this.updateInputValue} type="text" name="proposalInput" /></div>
+        <div><button onClick={this.handleSubmit} disabled={this.state.apiPending}>Submit</button></div>
+        <div><button onClick={this.handleUpdateProposals}  disabled={this.state.apiPending}>Update Proposals</button></div>
         <ProposalList proposals={this.state.proposals} />
       </div>
     );

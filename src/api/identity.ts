@@ -12,8 +12,7 @@ export const link = async function (api: ApiPromise, user: KeyringPair, identity
     // Retrieve the nonce for the user, to be used to sign the transaction
     const txNonce = await api.query.system.accountNonce(user.address());
     if (!txNonce) {
-      console.log("Failed to get nonce!");
-      return null;
+      return new Error("Failed to get nonce!");
     }
 
     let identityHash = blake2AsU8a(identity);
@@ -28,8 +27,7 @@ export const publish = async function (api: ApiPromise, user: KeyringPair, ident
     // Retrieve the nonce for Alice, to be used to sign the transaction
     const txNonce = await api.query.system.accountNonce(user.address());
     if (!txNonce) {
-      console.log("Failed to get nonce!");
-      return null;
+      return new Error("Failed to get nonce!");
     }
 
     let identityHash = blake2AsU8a(identity);

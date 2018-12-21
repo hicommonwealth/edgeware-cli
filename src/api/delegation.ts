@@ -6,8 +6,7 @@ export const delegateTo = async function (api: ApiPromise, user: KeyringPair, to
     // Retrieve the nonce for the user, to be used to sign the transaction
     const txNonce = await api.query.system.accountNonce(user.address());
     if (!txNonce) {
-        console.log("Failed to get nonce!");
-        return null;
+        return new Error("Failed to get nonce!");
     }
 
     const tx = api.tx.delegation.delegate_to(to);
@@ -21,8 +20,7 @@ export const undelegateFrom = async function (api: ApiPromise, user: KeyringPair
     // Retrieve the nonce for the user, to be used to sign the transaction
     const txNonce = await api.query.system.accountNonce(user.address());
     if (!txNonce) {
-        console.log("Failed to get nonce!");
-        return null;
+        return new Error("Failed to get nonce!");
     }
 
     const tx = api.tx.delegation.undelegate_from(from);

@@ -76,8 +76,7 @@ async function (api: ApiPromise, user: KeyringPair, proposal: string, category: 
   // Retrieve the nonce for the user, to be used to sign the transaction
   const txNonce = await api.query.system.accountNonce(user.address());
   if (!txNonce) {
-    console.log("Failed to get nonce!");
-    return null;
+    return new Error("Failed to get nonce!");
   }
 
   const prop = api.tx.governance.createProposal(proposal, category);
@@ -92,8 +91,7 @@ async function (api: ApiPromise, user: KeyringPair, proposalHash: Hash, commentT
   // Retrieve the nonce for the user, to be used to sign the transaction
   const txNonce = await api.query.system.accountNonce(user.address());
   if (!txNonce) {
-    console.log("Failed to get nonce!");
-    return null;
+    return new Error("Failed to get nonce!");
   }
 
   const comment = api.tx.governance.addComment(proposalHash, commentText);
@@ -108,8 +106,7 @@ async function (api: ApiPromise, user: KeyringPair, proposalHash: Hash, voteBool
   // Retrieve the nonce for the user, to be used to sign the transaction
   const txNonce = await api.query.system.accountNonce(user.address());
   if (!txNonce) {
-    console.log("Failed to get nonce!");
-    return null;
+    return new Error("Failed to get nonce!");
   }
 
   const vote_tx = api.tx.governance.vote(proposalHash, voteBool);
@@ -129,7 +126,6 @@ export const getProposalCount = async function (api: ApiPromise) {
 }
 
 export const getProposalByHash = async function (api: ApiPromise, proposalHash: Hash) {
-  console.log(api.query.governanceStorage);
   return await api.query.governanceStorage.proposalOf(proposalHash);
 }
 
