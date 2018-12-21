@@ -6,7 +6,7 @@ const { ApiPromise } = require('@polkadot/api');
 export const init = async function() {
   // Create our API with a default connection to the local node
   var options = {
-      additionalTypes : {
+      types : {
           ...IdentityTypes,
           ...GovernanceTypes,
       }
