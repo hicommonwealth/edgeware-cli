@@ -5,17 +5,16 @@
       "./node_modules/@types"
     ],
     "baseUrl": ".",
-    "isolatedModules": true,
+    "declaration": true,
     "outDir": "dist",
     "target": "esnext",
-    "allowJs": true,
     "esModuleInterop": true,
     "allowSyntheticDefaultImports": true,
     "strict": true,
     "forceConsistentCasingInFileNames": true,
     "module": "esnext",
     "moduleResolution": "node",
-    "noEmit": true,
+    "noEmit": false,
     "jsx": "preserve"
   },
   "include": [
