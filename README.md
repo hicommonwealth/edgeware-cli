@@ -1,6 +1,8 @@
 # edge_api_standard
 This repo describes the API for using Edgeware's modules in an easy, consumable way for front-end applications. It is built using `create-react-app`
 
+To publish, first run `tsc` to build the typescript modules, and then run `npm publish`.
+
 ## Available Scripts
 
 In the project directory, you can run:

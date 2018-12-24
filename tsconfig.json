@@ -1,0 +1,23 @@
+{
+  "compilerOptions": {
+    "typeRoots": [
+      "./node_modules/@polkadot/ts",
+      "./node_modules/@types"
+    ],
+    "baseUrl": ".",
+    "declaration": true,
+    "outDir": "dist",
+    "target": "esnext",
+    "esModuleInterop": true,
+    "allowSyntheticDefaultImports": true,
+    "strict": true,
+    "forceConsistentCasingInFileNames": true,
+    "module": "esnext",
+    "moduleResolution": "node",
+    "noEmit": false,
+    "jsx": "preserve"
+  },
+  "include": [
+    "./src/api/*"
+  ]
+}
