@@ -4,7 +4,6 @@
       "./node_modules/@polkadot/ts",
       "./node_modules/@types"
     ],
-    "baseUrl": ".",
     "declaration": true,
     "outDir": "dist",
     "target": "esnext",
@@ -14,8 +13,12 @@
     "forceConsistentCasingInFileNames": true,
     "module": "esnext",
     "moduleResolution": "node",
-    "noEmit": false,
-    "jsx": "preserve"
+    "noEmit": true,
+    "jsx": "preserve",
+    "allowJs": true,
+    "skipLibCheck": false,
+    "resolveJsonModule": true,
+    "isolatedModules": true
   },
   "include": [
     "./src/api/*"

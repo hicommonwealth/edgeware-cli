@@ -31,6 +31,7 @@ class App extends Component {
     super(props);
     this.state = {
       proposalValue: '',
+      proposalTitle: '',
       proposals: [],
       apiPending: true,
       api: null
@@ -47,7 +48,7 @@ class App extends Component {
     var alice = this.keyring.addFromSeed(stringToU8a(ALICE_SEED));
 
     console.log("Submit pressed on proposal: '" + this.state.proposalValue + "'");
-    await createProposal(this.state.api, alice, this.state.proposalValue, "Funding");
+    await createProposal(this.state.api, alice, this.state.proposalTitle, this.state.proposalValue, "Funding");
   };
 
   handleUpdateProposals = async event => {
@@ -58,15 +59,23 @@ class App extends Component {
       }));
       console.log(proposals);
       this.setState({
-          proposals: proposals.map(function (proposal) { return proposal.contents })
+          proposals: proposals.map(function (proposal) {
+            return proposal.title + ": " + proposal.contents
+          })
       });
   };
 
-  updateInputValue = event => {
+  updateTitleValue = event => {
       this.setState({
-          proposalValue: event.target.value
+          proposalTitle: event.target.value
       });
   }
+
+  updateProposalValue = event => {
+    this.setState({
+        proposalValue: event.target.value
+    });
+}
 
   componentDidMount() {
     init().then(function(api) {
@@ -90,7 +99,8 @@ class App extends Component {
     return (
       <div className="App">
         <header />
-        <div>Proposal: <input value={this.state.proposalValue} onChange={this.updateInputValue} type="text" name="proposalInput" /></div>
+        <div>Title: <input value={this.state.proposalTitle} onChange={this.updateTitleValue} type="text" name="titleInput" /></div>
+        <div>Proposal: <input value={this.state.proposalValue} onChange={this.updateProposalValue} type="text" name="proposalInput" /></div>
         <div><button onClick={this.handleSubmit} disabled={this.state.apiPending}>Submit</button></div>
         <div><button onClick={this.handleUpdateProposals}  disabled={this.state.apiPending}>Update Proposals</button></div>
         <ProposalList proposals={this.state.proposals} />
