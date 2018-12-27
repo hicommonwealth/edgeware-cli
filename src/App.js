@@ -89,7 +89,7 @@ class App extends Component {
     console.log(identities);
     this.setState({
       identities: identities.map(function (identity) {
-        return "" + identity.account;
+        return identity.account.toString();
       })
     });
   };
@@ -134,7 +134,7 @@ class App extends Component {
 
   componentDidMount() {
     init().then(function(api) {
-      console.log("API READY");
+      console.log(api);
       this.setState({
         apiPending: false,
         api: api

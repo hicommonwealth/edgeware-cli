@@ -27,12 +27,16 @@ class IdentityRecord extends Struct {
   constructor (value: any) {
     super({
       account: AccountId,
+      attestation: Bytes,
       proof: Option.with(Text),
       metadata: Option.with(MetadataRecord)
     }, value)
   }
   get account (): AccountId {
     return this.get('account') as AccountId;
+  }
+  get attestation (): Bytes {
+    return this.get('attestation') as Bytes;
   }
   get proof (): Text | null {
     var p = this.get('proof') as Option<Text>;
@@ -58,22 +62,21 @@ export const IdentityTypes = {
   "MetadataRecord": MetadataRecord
 };
 
-export const publish = async function (api: ApiPromise, user: KeyringPair, identity: Hash) {
+export const publish = async function (api: ApiPromise, user: KeyringPair, attestation: string) {
     // Retrieve the nonce for Alice, to be used to sign the transaction
     const txNonce = await api.query.system.accountNonce(user.address());
     if (!txNonce) {
       return new Error("Failed to get nonce!");
     }
 
-    let identityHash = blake2AsU8a(identity);
-    const publish = api.tx.identity.publish(identityHash);
+    const publish = api.tx.identity.publish(attestation);
     publish.sign(user, txNonce.toU8a());
     const pubHash = await publish.send();
-    console.log(`Identity ${identity} published with hash ${pubHash}`);
+    console.log(`Identity ${attestation} published with tx hash ${pubHash}`);
     return pubHash;
 }
 
-export const link = async function (api: ApiPromise, user: KeyringPair, identity: Hash, proof: Bytes) {
+export const link = async function (api: ApiPromise, user: KeyringPair, identity: Hash, proof: string) {
   // Retrieve the nonce for the user, to be used to sign the transaction
   const txNonce = await api.query.system.accountNonce(user.address());
   if (!txNonce) {
