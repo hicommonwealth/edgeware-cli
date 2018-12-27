@@ -94,11 +94,11 @@ export const getAllIdentities = async function (api: ApiPromise) {
 
 export const getIdentity = async function (api: ApiPromise, identity: Hash) {
   let identityHash = blake2AsU8a(identity);
-  return await api.query.identityStorage.identity_of(identityHash);
+  return await api.query.identityStorage.identityOf(identityHash);
 }
 
 export const getIdentityByHash = async function (api: ApiPromise, identityHash: Hash) {
-  return await api.query.identityStorage.identity_of(identityHash);
+  return await api.query.identityStorage.identityOf(identityHash);
 }
 
 export const getClaim = async function (api: ApiPromise, claimHash: Hash) {
