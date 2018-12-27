@@ -17,8 +17,7 @@
     "jsx": "preserve",
     "allowJs": true,
     "skipLibCheck": false,
-    "resolveJsonModule": true,
-    "isolatedModules": true
+    "resolveJsonModule": true
   },
   "include": [
     "./src/api/*"
