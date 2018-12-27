@@ -23,7 +23,7 @@ class MetadataRecord extends Struct {
   }
 }
 
-class ProposalRecord extends Struct {
+class IdentityRecord extends Struct {
   constructor (value: any) {
     super({
       account: AccountId,
@@ -54,7 +54,7 @@ class ProposalRecord extends Struct {
 
 export const IdentityTypes = {
   "Claim": Bytes,
-  "ProposalRecord": ProposalRecord,
+  "IdentityRecord": IdentityRecord,
   "MetadataRecord": MetadataRecord
 };
 
