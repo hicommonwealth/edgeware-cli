@@ -115,7 +115,7 @@ async function (api: ApiPromise, user: KeyringPair, proposalHash: Hash, voteBool
     return new Error("Failed to get nonce!");
   }
 
-  const vote_tx = api.tx.governance.vote(proposalHash, voteBool);
+  const vote_tx = api.tx.governance.submit_vote(proposalHash, voteBool);
   vote_tx.sign(user, txNonce.toU8a());
   const voteHash = await vote_tx.send();
   console.log(`Vote ${voteBool} for proposal ${proposalHash} published with hash ${voteHash}`);
@@ -139,4 +139,12 @@ export const getProposal = async function (api: ApiPromise, account: AccountId, 
   let input = u8aConcat(account, proposal);
   let proposalHash = new Hash(blake2AsU8a(input));
   return await getProposalByHash(api, proposalHash);
+}
+
+export const getProposalVoters = async function (api: ApiPromise, proposalHash: Hash) {
+  return await api.query.governanceStorage.proposalVoters(proposalHash);
+}
+
+export const getVoteByAccount = async function (api: ApiPromise, proposalHash: Hash, account: AccountId) {
+  return await api.query.governanceStorage.voteOf([proposalHash, account]);
 }
