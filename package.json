@@ -1,6 +1,6 @@
 {
   "name": "edgeware-api",
-  "version": "0.2.9",
+  "version": "0.2.10",
   "dependencies": {
     "@polkadot/api": "^0.35.12",
     "react": "^16.7.0",
