@@ -4,17 +4,20 @@ import { Hash, AccountId, Null, u32, Text } from "@polkadot/types";
 import { EnumType, Struct, Vector, Tuple } from '@polkadot/types/codec';
 import { blake2AsU8a } from '@polkadot/util-crypto';
 import { u8aConcat } from '@polkadot/util';
+import { stringToBytes } from "./util";
 
-class Referendum extends Null { }
-class Funding extends Null { }
-class NetworkChange extends Null { }
+class Signaling extends Null { }
 
-class ProposalCategory extends EnumType<Referendum | Funding | NetworkChange> {
+class Funding extends u32 { }
+
+class Upgrade extends Null { }
+
+class ProposalCategory extends EnumType<Signaling | Funding | Upgrade> {
   constructor (value?: string, index?: number) {
       super({
-          Referendum,
+          Signaling,
           Funding,
-          NetworkChange
+          Upgrade
     }, value, index);
   }
 }
@@ -42,6 +45,7 @@ class ProposalRecord extends Struct {
       author: AccountId,
       stage: ProposalStage,
       category: ProposalCategory,
+      title: Text,
       contents: Text,
       comments: Vector.with(ProposalComment)
     }, value);
@@ -58,6 +62,9 @@ class ProposalRecord extends Struct {
   get category () : ProposalCategory {
     return this.get('category') as ProposalCategory;
   }
+  get title () : Text {
+    return this.get('title') as Text;
+  }
   get contents () : Text {
     return this.get('contents') as Text;
   }
@@ -72,17 +79,16 @@ export const GovernanceTypes = {
 };
 
 export const createProposal =
-async function (api: ApiPromise, user: KeyringPair, proposal: string, category: ProposalCategory) {
+async function (api: ApiPromise, user: KeyringPair, title: string, proposal: string, category: ProposalCategory) {
   // Retrieve the nonce for the user, to be used to sign the transaction
   const txNonce = await api.query.system.accountNonce(user.address());
   if (!txNonce) {
     return new Error("Failed to get nonce!");
   }
-
-  const prop = api.tx.governance.createProposal(proposal, category);
+  const prop = api.tx.governance.createProposal(stringToBytes(title), stringToBytes(proposal), category);
   prop.sign(user, txNonce.toU8a());
   const propHash = await prop.send();
-  console.log(`Proposal ${proposal} published with hash ${propHash}`);
+  console.log(`Proposal ${title} published with hash ${propHash}`);
   return propHash;
 }
 
@@ -109,7 +115,7 @@ async function (api: ApiPromise, user: KeyringPair, proposalHash: Hash, voteBool
     return new Error("Failed to get nonce!");
   }
 
-  const vote_tx = api.tx.governance.vote(proposalHash, voteBool);
+  const vote_tx = api.tx.governance.submit_vote(proposalHash, voteBool);
   vote_tx.sign(user, txNonce.toU8a());
   const voteHash = await vote_tx.send();
   console.log(`Vote ${voteBool} for proposal ${proposalHash} published with hash ${voteHash}`);
@@ -133,4 +139,12 @@ export const getProposal = async function (api: ApiPromise, account: AccountId, 
   let input = u8aConcat(account, proposal);
   let proposalHash = new Hash(blake2AsU8a(input));
   return await getProposalByHash(api, proposalHash);
+}
+
+export const getProposalVoters = async function (api: ApiPromise, proposalHash: Hash) {
+  return await api.query.governanceStorage.proposalVoters(proposalHash);
+}
+
+export const getVoteByAccount = async function (api: ApiPromise, proposalHash: Hash, account: AccountId) {
+  return await api.query.governanceStorage.voteOf([proposalHash, account]);
 }
