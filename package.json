@@ -2,9 +2,9 @@
   "name": "edgeware-api",
   "version": "0.2.9",
   "dependencies": {
-    "@polkadot/api": "^0.35.9",
-    "react": "^16.6.3",
-    "react-dom": "^16.6.3",
+    "@polkadot/api": "^0.35.12",
+    "react": "^16.7.0",
+    "react-dom": "^16.7.0",
     "react-scripts": "2.1.1",
     "typescript": "^3.2.2"
   },

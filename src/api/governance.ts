@@ -4,6 +4,7 @@ import { Hash, AccountId, Null, u32, Text } from "@polkadot/types";
 import { EnumType, Struct, Vector, Tuple } from '@polkadot/types/codec';
 import { blake2AsU8a } from '@polkadot/util-crypto';
 import { u8aConcat } from '@polkadot/util';
+import { stringToBytes } from "./util";
 
 class Signaling extends Null { }
 
@@ -84,8 +85,7 @@ async function (api: ApiPromise, user: KeyringPair, title: string, proposal: str
   if (!txNonce) {
     return new Error("Failed to get nonce!");
   }
-
-  const prop = api.tx.governance.createProposal(title, proposal, category);
+  const prop = api.tx.governance.createProposal(stringToBytes(title), stringToBytes(proposal), category);
   prop.sign(user, txNonce.toU8a());
   const propHash = await prop.send();
   console.log(`Proposal ${title} published with hash ${propHash}`);

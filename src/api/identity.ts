@@ -1,8 +1,9 @@
 import { ApiPromise } from "@polkadot/api";
-import { Bytes, Hash, AccountId, u32, Text } from "@polkadot/types";
+import { Bytes, Hash, AccountId, Text } from "@polkadot/types";
 import { Option, Struct } from '@polkadot/types/codec';
 import { blake2AsU8a } from '@polkadot/util-crypto';
 import { KeyringPair } from "@polkadot/keyring/types";
+import { stringToBytes } from './util';
 
 class MetadataRecord extends Struct {
   constructor (value: any) {
@@ -69,7 +70,7 @@ export const publish = async function (api: ApiPromise, user: KeyringPair, attes
       return new Error("Failed to get nonce!");
     }
 
-    const publish = api.tx.identity.publish(attestation);
+    const publish = api.tx.identity.publish(stringToBytes(attestation));
     publish.sign(user, txNonce.toU8a());
     const pubHash = await publish.send();
     console.log(`Identity ${attestation} published with tx hash ${pubHash}`);
@@ -84,7 +85,7 @@ export const link = async function (api: ApiPromise, user: KeyringPair, identity
   }
 
   let identityHash = blake2AsU8a(identity);
-  const link = api.tx.identity.link(identityHash, proof);
+  const link = api.tx.identity.link(identityHash, stringToBytes(proof));
   link.sign(user, txNonce.toU8a());
   const linkHash = await link.send();
   console.log(`Identity ${identity} published with hash ${linkHash}`);

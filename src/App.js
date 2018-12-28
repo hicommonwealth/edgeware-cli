@@ -64,8 +64,9 @@ class App extends Component {
   }
 
   handleSubmit = async event => {
+    //const alice = this.state.keyring.addFromSeed(stringToU8a("Alice".padEnd(32, ' ')));
     console.log("Submit pressed on proposal: '" + this.state.proposalValue + "'");
-    const res = await createProposal(this.state.api, this.state.user, this.state.proposalTitle, this.state.proposalValue, "Funding");
+    const res = await createProposal(this.state.api, this.state.user, this.state.proposalTitle, this.state.proposalValue, "Signaling");
     console.log("Create proposal result: ", res);
   };
 
@@ -89,7 +90,7 @@ class App extends Component {
     console.log(identities);
     this.setState({
       identities: identities.map(function (identity) {
-        return identity.account.toString();
+        return identity.attestation.toString();
       })
     });
   };
