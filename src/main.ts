@@ -14,7 +14,15 @@ let main = async function(args) {
     let funcArgs = args.input.slice(2);
     //console.log(`module: ${mod}, func: ${func}, args: ${funcArgs}`);
 
-    let api = await init();
+    let endpoint = '127.0.0.1:9944';
+    if (args.flags.remoteNode) {
+        endpoint = args.flags.remoteNode;
+        if (endpoint.indexOf(":") === -1) {
+            endpoint += ":9944";
+        }
+        console.log(`Using remote node: ${endpoint}`);
+    }
+    let api = await init(endpoint);
     //TODO: catch errors
 
     let storageMod = mod + "Storage";
@@ -49,7 +57,8 @@ let args = meow(`
       $ yarn api <module> <function> [ARGS]...
 
     Options
-      --seed, -s  User seed, required for transactions.
+      --remote-node, -r  Remote node url (default: 'localhost:9944').
+      --seed, -s         User seed, required for transactions.
 
     Examples (TODO)
       $ yarn api --seed Alice identity publish www.github.com/drewstone
@@ -58,6 +67,10 @@ let args = meow(`
         seed: {
             type: 'string',
             alias: 's'
+        },
+        "remote-node": {
+            type: 'string',
+            alias: 'r'
         },
         help: {
             type: 'boolean',
