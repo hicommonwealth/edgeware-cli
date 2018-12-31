@@ -1,17 +1,14 @@
 {
   "name": "edgeware-api",
   "version": "0.2.10",
+  "main" : "/src/index.ts",
   "dependencies": {
     "@polkadot/api": "^0.35.12"
   },
   "scripts": {
-    "test": "mocha tests/**/*.js --require @babel/polyfill --require @babel/register"
+    "test": "mocha -require ts-node/register tests/**/*.spec.ts"
   },
   "devDependencies": {
-    "@babel/core": "^7.2.2",
-    "@babel/polyfill": "^7.2.5",
-    "@babel/preset-env": "^7.2.3",
-    "@babel/register": "^7.0.0",
     "@types/chai": "^4.1.7",
     "@types/mocha": "^5.2.5",
     "chai": "^4.2.0",

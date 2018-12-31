@@ -21,6 +21,6 @@
     "isolatedModules": true
   },
   "include": [
-    "./src/api/*"
+    "./src/*"
   ]
 }

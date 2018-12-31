@@ -10,7 +10,7 @@ import { GovernanceTypes } from '../src/governance';
 import testingPairs from '@polkadot/keyring/testingPairs';
 
 describe('Identity', () => {
-  let api;
+  let api : ApiPromise;
   let options = {
       types : {
           ...IdentityTypes,
