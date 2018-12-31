@@ -3,16 +3,19 @@
   "version": "0.2.10",
   "main": "/src/index.ts",
   "dependencies": {
-    "@polkadot/api": "^0.35.12"
+    "@polkadot/api": "^0.35.12",
+    "meow": "^5.0.0"
   },
   "scripts": {
-    "test": "mocha -r ts-node/register tests/**/*.spec.ts"
+    "test": "mocha -r ts-node/register tests/**/*.spec.ts",
+    "api": "ts-node src/main.ts"
   },
   "devDependencies": {
     "@types/chai": "^4.1.7",
     "@types/mocha": "^5.2.5",
     "chai": "^4.2.0",
     "mocha": "^5.2.0",
+    "reflect-metadata": "^0.1.12",
     "ts-node": "^7.0.1",
     "typescript": "^3.2.2",
     "typings": "^2.1.1"
