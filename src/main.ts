@@ -12,8 +12,6 @@ let main = async function(args) {
     let mod = args.input[0];
     let func = args.input[1];
     let funcArgs = args.input.slice(2);
-    //console.log(`module: ${mod}, func: ${func}, args: ${funcArgs}`);
-
     let endpoint = '127.0.0.1:9944';
     if (args.flags.remoteNode) {
         endpoint = args.flags.remoteNode;
@@ -23,15 +21,18 @@ let main = async function(args) {
         console.log(`Using remote node: ${endpoint}`);
     }
     let api = await init(endpoint);
-    //TODO: catch errors
 
     let storageMod = mod + "Storage";
     if (isQuery(api, storageMod, func)) {
         console.log(`Making query: ${storageMod}.${func}(${funcArgs})`);
-        let result = await makeQuery(api, storageMod, func, funcArgs);
-        console.log(result.toString());
-        //TODO: catch errors
-        process.exit(0);
+        try {
+            let result = await makeQuery(api, storageMod, func, funcArgs);
+            console.log(result.toString());
+            process.exit(0);
+        } catch (err) {
+            console.log("Failed: ", err);
+            process.exit(1);
+        }
     }
 
     if (isTx(api, mod, func)) {
@@ -42,10 +43,15 @@ let main = async function(args) {
         console.log(`Making tx: ${mod}.${func}(${funcArgs})`);
         const keyring = new Keyring();
         const user = keyring.addFromSeed(stringToU8a(args.flags.seed.padEnd(32, ' ')));
-        let result = await makeTx(api, mod, func, user, funcArgs);
-        console.log(result.toString());
-        //TODO: catch errors
-        process.exit(0);
+        try {
+            let result = await makeTx(api, mod, func, user, funcArgs);
+            console.log(result.toString());
+            process.exit(0);
+        } catch (err) {
+            console.log("Failed: ", err);
+            process.exit(1);
+        }
+
     }
 
     console.log("Edgeware function not found.");
