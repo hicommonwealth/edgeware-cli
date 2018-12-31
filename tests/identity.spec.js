@@ -5,13 +5,21 @@ import { blake2AsU8a } from '@polkadot/util-crypto';
 import { Keyring } from '@polkadot/keyring';
 import { stringToU8a } from '@polkadot/util';
 
+import { IdentityTypes } from '../src/identity';
+import { GovernanceTypes } from '../src/governance';
 import testingPairs from '@polkadot/keyring/testingPairs';
 
 describe('Identity', () => {
   let api;
+  let options = {
+      types : {
+          ...IdentityTypes,
+          ...GovernanceTypes,
+      }
+  };
 
   before(async () => {
-    api = await ApiPromise.create();
+    api = await ApiPromise.create(options);
   });
 
   it("should get the chain information", async function () {
