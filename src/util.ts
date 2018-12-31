@@ -7,14 +7,19 @@ export const stringToBytes = function(s: string) {
   return compactAddLength(stringToU8a(s));
 }
 
+export interface TypeSignature {
+    arguments: Type[],
+    return?: Type
+}
+
 const convertArgs = function(args: string[], types: Type[]) {
     if (args.length != types.length) {
         return new Error(`incorrect number of arguments. passed: ${args.length}, required: ${types.length}`);
     }
     let resultArgs = [];
     for (let i = 0; i < args.length; ++i) {
-        let arg = args[i];
-        let typeName = types.toString();
+        const arg = args[i];
+        const typeName = types.toString();
         if (typeName === "Bytes" || typeName === "Text") {
             resultArgs.push(stringToBytes(arg));
         } else {
@@ -28,16 +33,23 @@ export const isQuery = function(api: ApiPromise, mod: string, func: string) {
     return api.query[mod] && api.query[mod][func];
 }
 
+export const queryType = function(api: ApiPromise, mod: string, func: string) {
+    const t = api.query[mod][func].meta.type;
+    if (t.isMap) {
+        return "Storage: " + t.asMap.key.toString() + " -> " + t.asMap.value.toString();
+        
+    } else {
+        return "Storage: " + t.asType.toString();
+    }
+}
+
 export const makeQuery = async function(api:  ApiPromise,
                                         mod:  string,
                                         func: string,
                                         args: string[]) {
-    if (!isQuery(api, mod, func)) {
-        return new Error(`Query ${mod}.${func} does not exist!`);
-    }
-    let query = api.query[mod][func];
-    let types = query.meta.type.isMap ? [query.meta.type.asMap.key] : [];
-    let convertedArgs = convertArgs(args, types);
+    const query = api.query[mod][func];
+    const types = query.meta.type.isMap ? [query.meta.type.asMap.key] : [];
+    const convertedArgs = convertArgs(args, types);
     if (convertedArgs instanceof Error) {
         return convertedArgs;
     }
@@ -48,6 +60,15 @@ export const isTx = function(api: ApiPromise, mod: string, func: string) {
     return api.tx[mod] && api.tx[mod][func];
 }
 
+export const txType = function(api: ApiPromise, mod: string, func: string) {
+    const args = api.tx[mod][func].meta.arguments;
+    let result = "Transaction: (";
+    args.forEach(t => {
+        result += t.name + ": " + t.type + ", ";
+    });
+    return result + ") -> ()"
+}
+
 export const makeTx = async function(api:  ApiPromise,
                                      mod:  string,
                                      func: string,
@@ -56,8 +77,8 @@ export const makeTx = async function(api:  ApiPromise,
     if (!isTx(api, mod, func)) {
         return new Error(`Tx ${mod}.${func} does not exist!`);
     }
-    let txFunc = api.tx[mod][func];
-    let convertedArgs = convertArgs(args, txFunc.meta.arguments.map((m) => m.type));
+    const txFunc = api.tx[mod][func];
+    const convertedArgs = convertArgs(args, txFunc.meta.arguments.map((m) => m.type));
     if (convertedArgs instanceof Error) {
         return convertedArgs;
     }

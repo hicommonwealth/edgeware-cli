@@ -6,12 +6,14 @@ import Keyring from '@polkadot/keyring';
 import stringToU8a from '@polkadot/util/string/toU8a'
 
 import { init } from './index';
-import { isQuery, makeQuery, isTx, makeTx } from "./util"
+import { isQuery, makeQuery, isTx, makeTx, queryType, txType } from "./util"
 
 let main = async function(args) {
-    let mod = args.input[0];
-    let func = args.input[1];
-    let funcArgs = args.input.slice(2);
+    const seed = args.flags.seed;
+    const printTypes = args.flags.types;
+    const mod = args.input[0];
+    const func = args.input[1];
+    const funcArgs = args.input.slice(2);
     let endpoint = '127.0.0.1:9944';
     if (args.flags.remoteNode) {
         endpoint = args.flags.remoteNode;
@@ -20,13 +22,17 @@ let main = async function(args) {
         }
         console.log(`Using remote node: ${endpoint}`);
     }
-    let api = await init(endpoint);
+    const api = await init(endpoint);
 
-    let storageMod = mod + "Storage";
+    const storageMod = mod + "Storage";
     if (isQuery(api, storageMod, func)) {
+        if (printTypes) {
+            console.log(queryType(api, storageMod, func));
+            process.exit(0);
+        }
         console.log(`Making query: ${storageMod}.${func}(${funcArgs})`);
         try {
-            let result = await makeQuery(api, storageMod, func, funcArgs);
+            const result = await makeQuery(api, storageMod, func, funcArgs);
             console.log(result.toString());
             process.exit(0);
         } catch (err) {
@@ -36,15 +42,19 @@ let main = async function(args) {
     }
 
     if (isTx(api, mod, func)) {
-        if (!args.flags.seed) {
+        if (printTypes) {
+            console.log(txType(api, mod, func));
+            process.exit(0);
+        }
+        if (!seed) {
             console.log("Transactions must provide user (currently via --seed).");
             process.exit(1);
         }
         console.log(`Making tx: ${mod}.${func}(${funcArgs})`);
         const keyring = new Keyring();
-        const user = keyring.addFromSeed(stringToU8a(args.flags.seed.padEnd(32, ' ')));
+        const user = keyring.addFromSeed(stringToU8a(seed.padEnd(32, ' ')));
         try {
-            let result = await makeTx(api, mod, func, user, funcArgs);
+            const result = await makeTx(api, mod, func, user, funcArgs);
             console.log(result.toString());
             process.exit(0);
         } catch (err) {
@@ -65,9 +75,10 @@ let args = meow(`
     Options
       --remote-node, -r  Remote node url (default: 'localhost:9944').
       --seed, -s         User seed, required for transactions.
+      --types, -t        Print types instead of performing action.
 
     Examples (TODO)
-      $ yarn api --seed Alice identity publish www.github.com/drewstone
+      $ yarn api --seed Alice identity publish 'www.github.com/drewstone'
 `, {
     flags: {
         seed: {
@@ -77,6 +88,10 @@ let args = meow(`
         "remote-node": {
             type: 'string',
             alias: 'r'
+        },
+        "types": {
+            type: 'boolean',
+            alias: 't'
         },
         help: {
             type: 'boolean',

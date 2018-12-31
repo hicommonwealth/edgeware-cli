@@ -1,6 +1,7 @@
 {
   "name": "edgeware-api",
   "version": "0.2.10",
+  "license": "LicenseRef-LICENSE",
   "main": "/src/index.ts",
   "dependencies": {
     "@polkadot/api": "^0.35.12",
