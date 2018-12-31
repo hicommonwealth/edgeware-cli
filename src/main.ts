@@ -27,8 +27,8 @@ let main = async function(args) {
 
     let storageMod = mod + "Storage";
     if (isQuery(api, storageMod, func)) {
-        console.log(`Making query: ${storageMod}.${func}`);
-        let result = await makeQuery(api, storageMod, func, args);
+        console.log(`Making query: ${storageMod}.${func}(${funcArgs})`);
+        let result = await makeQuery(api, storageMod, func, funcArgs);
         console.log(result.toString());
         //TODO: catch errors
         process.exit(0);
@@ -39,10 +39,10 @@ let main = async function(args) {
             console.log("Transactions must provide user (currently via --seed).");
             process.exit(1);
         }
-        console.log(`Making tx: ${mod}.${func}`);
+        console.log(`Making tx: ${mod}.${func}(${funcArgs})`);
         const keyring = new Keyring();
         const user = keyring.addFromSeed(stringToU8a(args.flags.seed.padEnd(32, ' ')));
-        let result = await makeTx(api, mod, func, user, args);
+        let result = await makeTx(api, mod, func, user, funcArgs);
         console.log(result.toString());
         //TODO: catch errors
         process.exit(0);
