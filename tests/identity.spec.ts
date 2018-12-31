@@ -1,13 +1,13 @@
-import { ApiPromise } from '@polkadot/api';
-import { TypeRegistry } from '@polkadot/types/codec/typeRegistry';
-import { u32, Bytes } from '@polkadot/types';
-import { blake2AsU8a } from '@polkadot/util-crypto';
-import { Keyring } from '@polkadot/keyring';
-import { stringToU8a } from '@polkadot/util';
+const { ApiPromise } = require('@polkadot/api');
+const { TypeRegistry } = require('@polkadot/types/codec/typeRegistry');
+const { u32, Bytes } = require('@polkadot/types');
+const { blake2AsU8a } = require('@polkadot/util-crypto');
+const { Keyring } = require('@polkadot/keyring');
+const { stringToU8a } = require('@polkadot/util');
 
-import { IdentityTypes } from '../src/identity';
-import { GovernanceTypes } from '../src/governance';
-import testingPairs from '@polkadot/keyring/testingPairs';
+const { IdentityTypes } = require('../src/identity');
+const { GovernanceTypes } = require('../src/governance');
+const testingPairs = require('@polkadot/keyring/testingPairs');
 
 describe('Identity', () => {
   let api : ApiPromise;
