@@ -18,7 +18,7 @@ describe('Identity', () => {
   };
 
   it("should get the chain information", async function () {
-    let api: ApiPromise = await ApiPromise.create(options);
+    let api = await ApiPromise.create(options);
     const [chain, nodeName, nodeVersion] = await Promise.all([
       api.rpc.system.chain(),
       api.rpc.system.name(),
