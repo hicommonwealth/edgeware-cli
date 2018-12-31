@@ -10,19 +10,15 @@ const { GovernanceTypes } = require('../src/governance');
 const testingPairs = require('@polkadot/keyring/testingPairs');
 
 describe('Identity', () => {
-  let api : ApiPromise;
-  let options = {
+  var options = {
       types : {
           ...IdentityTypes,
           ...GovernanceTypes,
       }
   };
 
-  before(async () => {
-    api = await ApiPromise.create(options);
-  });
-
   it("should get the chain information", async function () {
+    let api: ApiPromise = await ApiPromise.create(options);
     const [chain, nodeName, nodeVersion] = await Promise.all([
       api.rpc.system.chain(),
       api.rpc.system.name(),
