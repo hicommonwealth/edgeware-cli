@@ -5,11 +5,11 @@
   "main": "/src/index.ts",
   "dependencies": {
     "@polkadot/api": "^0.35.12",
-    "meow": "^5.0.0"
+    "commander": "^2.19.0"
   },
   "scripts": {
     "test": "mocha -r ts-node/register tests/**/*.spec.ts",
-    "api": "ts-node src/main.ts"
+    "api": "ts-node src/index.ts"
   },
   "devDependencies": {
     "@types/chai": "^4.1.7",
