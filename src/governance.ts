@@ -1,10 +1,10 @@
-import { ApiPromise } from "@polkadot/api";
-import { KeyringPair } from "@polkadot/keyring/types";
-import { Hash, AccountId, Null, u32, Text } from "@polkadot/types";
+import { ApiPromise } from '@polkadot/api';
+import { KeyringPair } from '@polkadot/keyring/types';
+import { Hash, AccountId, Null, u32, Text } from '@polkadot/types';
 import { EnumType, Struct, Vector, Tuple } from '@polkadot/types/codec';
 import { blake2AsU8a } from '@polkadot/util-crypto';
 import { u8aConcat } from '@polkadot/util';
-import { stringToBytes } from "./util";
+import { stringToBytes } from './util';
 
 class Signaling extends Null { }
 
@@ -17,7 +17,7 @@ class ProposalCategory extends EnumType<Signaling | Funding | Upgrade> {
       super({
           Signaling,
           Funding,
-          Upgrade
+          Upgrade,
     }, value, index);
   }
 }
@@ -31,7 +31,7 @@ class ProposalStage extends EnumType<PreVoting | Voting | Completed> {
     super({
       PreVoting,
       Voting,
-      Completed
+      Completed,
     }, value, index);
   }
 }
@@ -47,7 +47,7 @@ class ProposalRecord extends Struct {
       category: ProposalCategory,
       title: Text,
       contents: Text,
-      comments: Vector.with(ProposalComment)
+      comments: Vector.with(ProposalComment),
     }, value);
   }
   get index (): u32 {
@@ -74,6 +74,6 @@ class ProposalRecord extends Struct {
 }
 
 export const GovernanceTypes = {
-    "ProposalCategory": ProposalCategory,
-    "ProposalRecord": ProposalRecord
+    ProposalCategory,
+    ProposalRecord,
 };

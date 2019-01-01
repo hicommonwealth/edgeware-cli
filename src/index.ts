@@ -1,19 +1,16 @@
 #!/usr/bin/env ts-node
 
-import { default as meow } from 'meow';
-
+import program from 'commander';
 import Keyring from '@polkadot/keyring';
-import stringToU8a from '@polkadot/util/string/toU8a'
+import stringToU8a from '@polkadot/util/string/toU8a';
 import { ApiPromise } from '@polkadot/api';
 import { WsProvider } from '@polkadot/rpc-provider';
 
-import { isQuery, makeQuery, isTx, makeTx, queryType, txType } from "./util"
+import { isQuery, makeQuery, isTx, makeTx, queryType, txType } from './util';
 import { IdentityTypes } from './identity';
-import { GovernanceTypes } from './governance'
+import { GovernanceTypes } from './governance';
 
-var program = require('commander');
-
-program.version('0.1.0')
+program.version('0.2.10')
   .name('yarn api')
   .usage('<module> <function> [ARGS...]')
   .arguments('<mod> <func> [args...]')
@@ -41,16 +38,16 @@ program.version('0.1.0')
       program.remoteNode = '127.0.0.1:9944';
     }
 
-    var options = {
+    const options = {
       types : {
           ...IdentityTypes,
           ...GovernanceTypes,
       },
-      provider : new WsProvider("ws://" + program.remoteNode),
+      provider : new WsProvider('ws://' + program.remoteNode),
     };
 
     const api = await ApiPromise.create(options);
-    const storageMod = mod + "Storage";
+    const storageMod = mod + 'Storage';
 
     if (isQuery(api, storageMod, func)) {
       if (program.types) {
@@ -63,7 +60,7 @@ program.version('0.1.0')
         console.log(result.toString());
         process.exit(0);
       } catch (err) {
-        console.log("Failed: ", err);
+        console.log('Failed: ', err);
         process.exit(1);
       }
     }
@@ -83,7 +80,7 @@ program.version('0.1.0')
         console.log(result.toString());
         process.exit(0);
       } catch (err) {
-        console.log("Failed: ", err);
+        console.log('Failed: ', err);
         process.exit(1);
       }
     }
@@ -92,7 +89,7 @@ program.version('0.1.0')
   .option('-r, --remoteNode', 'Remote node url (default: "localhost:9944").')
   .option('-t, --types', 'Print types instead of performing action.');
 
-program.on('--help', function() {
+program.on('--help', () => {
   console.log('');
   console.log('Examples (TODO):');
   console.log('  yarn api --seed Alice identity publish "www.github.com/drewstone"\n');
@@ -100,7 +97,7 @@ program.on('--help', function() {
 
 program.parse(process.argv);
 
-if (program.args.length == 0) {
+if (program.args.length === 0) {
   program.outputHelp();
   process.exit(1);
 }

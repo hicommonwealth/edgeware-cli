@@ -1,8 +1,8 @@
-import { ApiPromise } from "@polkadot/api";
-import { Bytes, Hash, AccountId, Text } from "@polkadot/types";
+import { ApiPromise } from '@polkadot/api';
+import { Bytes, Hash, AccountId, Text } from '@polkadot/types';
 import { Option, Struct } from '@polkadot/types/codec';
 import { blake2AsU8a } from '@polkadot/util-crypto';
-import { KeyringPair } from "@polkadot/keyring/types";
+import { KeyringPair } from '@polkadot/keyring/types';
 import { stringToBytes } from './util';
 
 class MetadataRecord extends Struct {
@@ -10,8 +10,8 @@ class MetadataRecord extends Struct {
     super({
       avatar: Text,
       display_name: Text,
-      tagline: Text
-    }, value)
+      tagline: Text,
+    }, value);
   }
   get avatar (): Text {
     return this.get('avatar') as Text;
@@ -30,8 +30,8 @@ class IdentityRecord extends Struct {
       account: AccountId,
       attestation: Bytes,
       proof: Option.with(Text),
-      metadata: Option.with(MetadataRecord)
-    }, value)
+      metadata: Option.with(MetadataRecord),
+    }, value);
   }
   get account (): AccountId {
     return this.get('account') as AccountId;
@@ -40,7 +40,7 @@ class IdentityRecord extends Struct {
     return this.get('attestation') as Bytes;
   }
   get proof (): Text | null {
-    var p = this.get('proof') as Option<Text>;
+    const p = this.get('proof') as Option<Text>;
     if (p.isNone) {
       return null;
     } else {
@@ -48,7 +48,7 @@ class IdentityRecord extends Struct {
     }
   }
   get metadata (): MetadataRecord | null {
-    var mdOpt = this.get('metadata') as Option<MetadataRecord>;
+    const mdOpt = this.get('metadata') as Option<MetadataRecord>;
     if (mdOpt.isNone) {
       return null;
     } else {
@@ -58,7 +58,7 @@ class IdentityRecord extends Struct {
 }
 
 export const IdentityTypes = {
-  "Claim": Bytes,
-  "IdentityRecord": IdentityRecord,
-  "MetadataRecord": MetadataRecord
+  IdentityRecord,
+  MetadataRecord,
+  Claim: Bytes,
 };
