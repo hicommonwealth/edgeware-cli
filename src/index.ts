@@ -2,7 +2,7 @@
 
 import program from 'commander';
 import Keyring from '@polkadot/keyring';
-import stringToU8a from '@polkadot/util/string/toU8a';
+import { isHex, hexToU8a, stringToU8a } from '@polkadot/util/';
 import { ApiPromise } from '@polkadot/api';
 import { WsProvider } from '@polkadot/rpc-provider';
 
@@ -39,11 +39,11 @@ program.version('0.2.10')
     }
 
     const options = {
-      types : {
-          ...IdentityTypes,
-          ...GovernanceTypes,
-      },
       provider : new WsProvider('ws://' + program.remoteNode),
+      types : {
+        ...IdentityTypes,
+        ...GovernanceTypes,
+      },
     };
 
     const api = await ApiPromise.create(options);
@@ -74,7 +74,15 @@ program.version('0.2.10')
       console.log(`Making tx: ${mod}.${func}("${args}")`);
       const keyring = new Keyring();
       // TODO: make sure seed is properly formatted (32 byte hex string)
-      const user = keyring.addFromSeed(stringToU8a(program.seed.padEnd(32, ' ')));
+
+      let seed;
+      if (isHex(program.seed)) {
+        seed = hexToU8a(program.seed.padEnd(32, ' '));
+      } else {
+        seed = stringToU8a(program.seed.padEnd(32, ' '))
+      }
+
+      const user = keyring.addFromSeed(seed);
       try {
         const result = await makeTx(api, mod, func, user, args);
         console.log(result.toString());

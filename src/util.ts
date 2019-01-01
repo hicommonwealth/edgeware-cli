@@ -1,3 +1,4 @@
+import fs from 'fs';
 import { ApiPromise } from '@polkadot/api';
 import { KeyringPair } from '@polkadot/keyring/types';
 import { compactAddLength, stringToU8a } from '@polkadot/util';
@@ -69,10 +70,17 @@ export const makeTx = async (api:  ApiPromise, mod:  string, func: string, user:
         return new Error(`Tx ${mod}.${func} does not exist!`);
     }
     const txFunc = api.tx[mod][func];
+
+    if (mod === 'upgradeKey' && func === 'upgrade') {
+      args = [fs.readFileSync(args[0], "utf8")];
+    }
+
     const convertedArgs = convertArgs(args, txFunc.meta.arguments.map((m) => m.type));
     if (convertedArgs instanceof Error) {
         return convertedArgs;
     }
+
+    console.log(convertedArgs);
 
     const txNonce = await api.query.system.accountNonce(user.address());
     if (!txNonce) {
