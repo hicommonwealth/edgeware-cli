@@ -1,6 +1,6 @@
 {
   "name": "edgeware-api",
-  "version": "0.2.10",
+  "version": "0.2.11",
   "license": "LicenseRef-LICENSE",
   "main": "/src/index.ts",
   "dependencies": {

@@ -6,6 +6,7 @@
     "jsRules": {},
     "rules": {
     	"quotemark": [true, "single"],
+        "indent": [true, "spaces", 2],
         "no-console": false,
     	"ordered-imports": false,
         "max-classes-per-file": false,
