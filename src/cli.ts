@@ -92,6 +92,8 @@ program.version('0.2.10')
         process.exit(1);
       }
     }
+
+    process.exit(1);
   })
   .option('-s, --seed <key>', 'Public/private keypair seed')
   .option('-r, --remoteNode', 'Remote node url (default: "localhost:9944").')
