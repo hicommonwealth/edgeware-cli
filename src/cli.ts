@@ -57,7 +57,7 @@ program.version('0.2.10')
       console.log(`Making query: ${storageMod}.${func}("${args}")`);
       try {
         const result = await makeQuery(api, storageMod, func, args);
-        console.log(result.toString());
+        console.log(result ? result.toString() : result);
         process.exit(0);
       } catch (err) {
         console.log('Failed: ', err);

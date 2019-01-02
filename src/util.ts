@@ -49,7 +49,7 @@ export const makeQuery = async (api:  ApiPromise, mod:  string, func: string, ar
     if (convertedArgs instanceof Error) {
         return convertedArgs;
     }
-    return await query.apply(api, convertedArgs);
+    return await query(...convertedArgs);
 };
 
 export const isTx = (api: ApiPromise, mod: string, func: string) => {
@@ -86,7 +86,7 @@ export const makeTx = async (api:  ApiPromise, mod:  string, func: string, user:
     if (!txNonce) {
         return new Error('Failed to get nonce!');
     }
-    const tx = txFunc.apply(api, convertedArgs);
+    const tx = txFunc(...convertedArgs);
     tx.sign(user, txNonce.toU8a());
     const hash = await tx.send();
     return hash;

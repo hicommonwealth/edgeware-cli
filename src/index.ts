@@ -3,7 +3,7 @@ import { WsProvider } from '@polkadot/rpc-provider';
 import { IdentityTypes } from './identity';
 import { GovernanceTypes } from './governance';
 
-export default async function (remoteNodeUrl) {
+export default async function (remoteNodeUrl: string) {
   const options = {
     provider : new WsProvider('ws://' + remoteNodeUrl),
     types : {

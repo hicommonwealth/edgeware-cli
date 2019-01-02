@@ -9,14 +9,14 @@
     "target": "esnext",
     "esModuleInterop": true,
     "allowSyntheticDefaultImports": true,
+    "strict": true,
     "forceConsistentCasingInFileNames": true,
-    "module": "commonjs",
+    "module": "esnext",
     "moduleResolution": "node",
-    "noEmit": true,
+    "noEmit": false,
     "jsx": "preserve",
     "skipLibCheck": false,
-    "resolveJsonModule": true,
-    "allowJs": true,
+    "resolveJsonModule": true
   },
   "include": [
     "./src/*"
