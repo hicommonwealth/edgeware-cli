@@ -36,9 +36,9 @@ export const isQuery = (api: ApiPromise, mod: string, func: string) => {
 export const queryType = (api: ApiPromise, mod: string, func: string) => {
     const t = api.query[mod][func].meta.type;
     if (t.isMap) {
-        return 'Storage: ' + t.asMap.key.toString() + ' -> ' + t.asMap.value.toString();
+        return `query.${mod}.${func}: ` + t.asMap.key.toString() + ' -> ' + t.asMap.value.toString();
     } else {
-        return 'Storage: ' + t.asType.toString();
+        return `query.${mod}.${func}: ` + t.asType.toString();
     }
 };
 
@@ -58,7 +58,7 @@ export const isTx = (api: ApiPromise, mod: string, func: string) => {
 
 export const txType = (api: ApiPromise, mod: string, func: string) => {
     const args = api.tx[mod][func].meta.arguments;
-    let result = 'Transaction: (';
+    let result = `tx.${mod}.${func}: (`;
     args.forEach((t) => {
         result += t.name + ': ' + t.type + ', ';
     });
