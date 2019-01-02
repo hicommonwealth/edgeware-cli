@@ -9,8 +9,11 @@ import { WsProvider } from '@polkadot/rpc-provider';
 import { isQuery, makeQuery, isTx, makeTx, queryType, txType } from './util';
 import { IdentityTypes } from './identity';
 import { GovernanceTypes } from './governance';
+import { default as initApi } from './index';
 
-program.version('0.2.10')
+import { version } from '../package.json';
+
+program.version(version)
   .name('yarn api')
   .usage('<module> <function> [ARGS...]')
   .arguments('<mod> <func> [args...]')
@@ -21,35 +24,26 @@ program.version('0.2.10')
       process.exit(1);
     }
 
+    if (typeof program.remoteNode === 'undefined') {
+      console.error('Defaulting to local node 127.0.0.1:9944');
+      program.remoteNode = '127.0.0.1:9944';
+    }
+
     if (typeof func === 'undefined') {
       console.error('\nNo module function provided!\n');
       program.outputHelp();
       process.exit(1);
     }
 
-    if (typeof program.seed === 'undefined') {
-      console.error('\nNo account seed provided!\n');
-      program.outputHelp();
-      process.exit(1);
-    }
+    const api = await initApi(program.remoteNode);
 
-    if (typeof program.remoteNode === 'undefined') {
-      console.error('Defaulting to local node 127.0.0.1:9944');
-      program.remoteNode = '127.0.0.1:9944';
-    }
-
-    const options = {
-      provider : new WsProvider('ws://' + program.remoteNode),
-      types : {
-        ...IdentityTypes,
-        ...GovernanceTypes,
-      },
-    };
-
-    const api = await ApiPromise.create(options);
-    const storageMod = mod + 'Storage';
-
-    if (isQuery(api, storageMod, func)) {
+    let storageMod = mod + 'Storage';
+    let noSuffix;
+    if ((noSuffix = isQuery(api, mod, func)) || isQuery(api, storageMod, func)) {
+      // some SRML storage objects e.g. balances lack the 'Storage' suffix.
+      if (noSuffix) {
+        storageMod = mod;
+      }
       if (program.types) {
         console.log(queryType(api, storageMod, func));
         process.exit(0);
@@ -71,6 +65,12 @@ program.version('0.2.10')
         process.exit(0);
       }
 
+      if (typeof program.seed === 'undefined') {
+        console.error('\nNo account seed provided!\n');
+        program.outputHelp();
+        process.exit(1);
+      }
+  
       console.log(`Making tx: ${mod}.${func}("${args}")`);
       const keyring = new Keyring();
       // TODO: make sure seed is properly formatted (32 byte hex string)

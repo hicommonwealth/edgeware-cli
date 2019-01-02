@@ -18,9 +18,12 @@ const convertArgs = (args: string[], types: Type[]) => {
         return new Error(`incorrect number of arguments. passed: ${args.length}, required: ${types.length}`);
     }
     const resultArgs = [];
-    for (const arg of args) {
-        const typeName = types.toString();
+    for (let i = 0; i < args.length; ++i) {
+        const typeName = types[i].toString();
+        const arg = args[i];
+        console.log(typeName);
         if (typeName === 'Bytes' || typeName === 'Text') {
+            console.log("Converting string to bytes");
             resultArgs.push(stringToBytes(arg));
         } else {
             resultArgs.push(arg);
@@ -36,9 +39,9 @@ export const isQuery = (api: ApiPromise, mod: string, func: string) => {
 export const queryType = (api: ApiPromise, mod: string, func: string) => {
     const t = api.query[mod][func].meta.type;
     if (t.isMap) {
-        return 'Storage: ' + t.asMap.key.toString() + ' -> ' + t.asMap.value.toString();
+        return `query.${mod}.${func}: ` + t.asMap.key.toString() + ' -> ' + t.asMap.value.toString();
     } else {
-        return 'Storage: ' + t.asType.toString();
+        return `query.${mod}.${func}: ` + t.asType.toString();
     }
 };
 
@@ -58,7 +61,7 @@ export const isTx = (api: ApiPromise, mod: string, func: string) => {
 
 export const txType = (api: ApiPromise, mod: string, func: string) => {
     const args = api.tx[mod][func].meta.arguments;
-    let result = 'Transaction: (';
+    let result = `tx.${mod}.${func}: (`;
     args.forEach((t) => {
         result += t.name + ': ' + t.type + ', ';
     });
