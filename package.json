@@ -9,7 +9,7 @@
   },
   "scripts": {
     "test": "mocha -r ts-node/register tests/**/*.spec.ts",
-    "api": "ts-node src/index.ts",
+    "api": "ts-node src/cli.ts",
     "lint": "tslint -c tslint.json 'src/**/*.ts'"
   },
   "devDependencies": {
