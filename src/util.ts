@@ -18,9 +18,12 @@ const convertArgs = (args: string[], types: Type[]) => {
         return new Error(`incorrect number of arguments. passed: ${args.length}, required: ${types.length}`);
     }
     const resultArgs = [];
-    for (const arg of args) {
-        const typeName = types.toString();
+    for (let i = 0; i < args.length; ++i) {
+        const typeName = types[i].toString();
+        const arg = args[i];
+        console.log(typeName);
         if (typeName === 'Bytes' || typeName === 'Text') {
+            console.log("Converting string to bytes");
             resultArgs.push(stringToBytes(arg));
         } else {
             resultArgs.push(arg);
