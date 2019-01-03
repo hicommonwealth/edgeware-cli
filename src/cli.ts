@@ -27,6 +27,8 @@ program.version(version)
     if (typeof program.remoteNode === 'undefined') {
       console.error('Defaulting to local node 127.0.0.1:9944');
       program.remoteNode = '127.0.0.1:9944';
+    } else if (program.remoteNode.indexOf(":") === -1) {
+      program.remoteNode += ":9944";
     }
 
     if (typeof func === 'undefined') {
@@ -36,7 +38,7 @@ program.version(version)
     }
 
     const api = await initApi(program.remoteNode);
-
+    
     let storageMod = mod + 'Storage';
     let noSuffix;
     if ((noSuffix = isQuery(api, mod, func)) || isQuery(api, storageMod, func)) {
@@ -94,7 +96,7 @@ program.version(version)
     }
   })
   .option('-s, --seed <key>', 'Public/private keypair seed')
-  .option('-r, --remoteNode', 'Remote node url (default: "localhost:9944").')
+  .option('-r, --remoteNode <url>', 'Remote node url (default: "localhost:9944").')
   .option('-t, --types', 'Print types instead of performing action.');
 
 program.on('--help', () => {
