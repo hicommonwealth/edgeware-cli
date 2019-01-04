@@ -11,16 +11,14 @@
     "allowSyntheticDefaultImports": true,
     "strict": true,
     "forceConsistentCasingInFileNames": true,
-    "module": "esnext",
+    "module": "commonjs",
     "moduleResolution": "node",
-    "noEmit": true,
+    "noEmit": false,
     "jsx": "preserve",
     "skipLibCheck": false,
-    "resolveJsonModule": true,
-    "allowJs": true,
-    "isolatedModules": true
+    "resolveJsonModule": true
   },
   "include": [
-    "./src/api/*"
+    "./src/*"
   ]
 }
