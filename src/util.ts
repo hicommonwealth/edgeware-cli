@@ -72,7 +72,7 @@ export const makeTx = async (api:  ApiPromise, mod:  string, func: string, user:
         return new Error(`Tx ${mod}.${func} does not exist!`);
     }
     const txFunc = api.tx[mod][func];
-    console.log(txFunc.meta.arguments);
+
     if (mod === 'upgradeKey' && func === 'upgrade') {
       args = [fs.readFileSync(args[0], 'utf8')];
     }
