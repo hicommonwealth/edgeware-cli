@@ -23,7 +23,6 @@ const convertArgs = (args: string[], types: Type[]) => {
         const arg = args[i];
         console.log(typeName);
         if (typeName === 'Bytes' || typeName === 'Text') {
-            console.log("Converting string to bytes");
             resultArgs.push(stringToBytes(arg));
         } else {
             resultArgs.push(arg);

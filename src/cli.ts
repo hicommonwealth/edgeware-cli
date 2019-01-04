@@ -39,20 +39,14 @@ program.version(version)
 
     const api = await initApi(program.remoteNode);
 
-    let storageMod = mod + 'Storage';
-    let noSuffix;
-    if ((noSuffix = isQuery(api, mod, func)) || isQuery(api, storageMod, func)) {
-      // some SRML storage objects e.g. balances lack the 'Storage' suffix.
-      if (noSuffix) {
-        storageMod = mod;
-      }
+    if (isQuery(api, mod, func)) {
       if (program.types) {
-        console.log(queryType(api, storageMod, func));
+        console.log(queryType(api, mod, func));
         process.exit(0);
       }
-      console.log(`Making query: ${storageMod}.${func}("${args}")`);
+      console.log(`Making query: ${mod}.${func}("${args}")`);
       try {
-        const result = await makeQuery(api, storageMod, func, args);
+        const result = await makeQuery(api, mod, func, args);
         console.log(result ? result.toString() : result);
         process.exit(0);
       } catch (err) {
