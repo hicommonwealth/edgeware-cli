@@ -27,6 +27,8 @@ program.version(version)
     if (typeof program.remoteNode === 'undefined') {
       console.error('Defaulting to local node 127.0.0.1:9944');
       program.remoteNode = '127.0.0.1:9944';
+    } else if (program.remoteNode.indexOf(':') === -1) {
+      program.remoteNode += ':9944';
     }
 
     if (typeof func === 'undefined') {
@@ -70,17 +72,14 @@ program.version(version)
         program.outputHelp();
         process.exit(1);
       }
-  
+
       console.log(`Making tx: ${mod}.${func}("${args}")`);
       const keyring = new Keyring();
       // TODO: make sure seed is properly formatted (32 byte hex string)
 
-      let seed;
-      if (isHex(program.seed)) {
-        seed = hexToU8a(program.seed.padEnd(32, ' '));
-      } else {
-        seed = stringToU8a(program.seed.padEnd(32, ' '))
-      }
+      const seed = isHex(program.seed)
+        ? hexToU8a(program.seed.padEnd(32, ' '))
+        : stringToU8a(program.seed.padEnd(32, ' '));
 
       const user = keyring.addFromSeed(seed);
       try {
@@ -92,11 +91,9 @@ program.version(version)
         process.exit(1);
       }
     }
-
-    process.exit(1);
   })
   .option('-s, --seed <key>', 'Public/private keypair seed')
-  .option('-r, --remoteNode', 'Remote node url (default: "localhost:9944").')
+  .option('-r, --remoteNode <url>', 'Remote node url (default: "localhost:9944").')
   .option('-t, --types', 'Print types instead of performing action.');
 
 program.on('--help', () => {

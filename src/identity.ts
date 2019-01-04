@@ -1,5 +1,5 @@
 import { ApiPromise } from '@polkadot/api';
-import { Bytes, Hash, AccountId, Text } from '@polkadot/types';
+import { Bytes, Hash, AccountId, Text, u32 } from '@polkadot/types';
 import { Option, Struct } from '@polkadot/types/codec';
 import { blake2AsU8a } from '@polkadot/util-crypto';
 import { KeyringPair } from '@polkadot/keyring/types';
@@ -57,8 +57,16 @@ class IdentityRecord extends Struct {
   }
 }
 
-export const IdentityTypes = {
+// Old types that aren't used anymore (kept for backwards compatability)
+const ArchivedTypes = {
+  IdentityIndex: u32,
+};
+
+// Current types
+const CurrentTypes = {
   IdentityRecord,
   MetadataRecord,
   Claim: Bytes,
 };
+
+export const IdentityTypes = { ...ArchivedTypes, ...CurrentTypes };
