@@ -71,13 +71,11 @@ export const makeTx = async (api:  ApiPromise, mod:  string, func: string, user:
     if (!isTx(api, mod, func)) {
         return new Error(`Tx ${mod}.${func} does not exist!`);
     }
-    const txFunc = api.tx[mod][func];
 
-    if (mod === 'upgradeKey' && func === 'upgrade') {
-      args = [fs.readFileSync(args[0], 'utf8')];
-    }
+    const convertedArgs = (mod === 'upgradeKey' && func === 'upgrade')
+        ? convertedArgs = compactAddLength(hexToU8a(fs.readFileSync(args[0])))
+        : convertedArgs = convertArgs(args, txFunc.meta.arguments.map((m) => m.type));
 
-    const convertedArgs = convertArgs(args, txFunc.meta.arguments.map((m) => m.type));
     if (convertedArgs instanceof Error) {
         return convertedArgs;
     }
@@ -86,8 +84,8 @@ export const makeTx = async (api:  ApiPromise, mod:  string, func: string, user:
     if (!txNonce) {
         return new Error('Failed to get nonce!');
     }
-    const tx = txFunc(...convertedArgs);
-    tx.sign(user, txNonce.toU8a());
-    const hash = await tx.send();
-    return hash;
+
+    return await api.tx[mod][func](...convertedArgs)
+        .sign(user, txNonce)
+        .send();
 };
