@@ -1,7 +1,12 @@
 import { ApiPromise } from '@polkadot/api';
 import { WsProvider } from '@polkadot/rpc-provider';
-import { IdentityTypes } from './identity';
-import { GovernanceTypes } from './governance';
+import { IdentityTypes, VariableLengthIdentityTypes } from './identity';
+import { GovernanceTypes, VariableLengthGovernanceTypes } from './governance';
+
+export const VariableLengthTypes = [
+  ...VariableLengthIdentityTypes,
+  ...VariableLengthGovernanceTypes,
+];
 
 export default async function (remoteNodeUrl: string) {
   const options = {

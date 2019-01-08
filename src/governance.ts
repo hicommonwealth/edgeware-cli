@@ -1,10 +1,5 @@
-import { ApiPromise } from '@polkadot/api';
-import { KeyringPair } from '@polkadot/keyring/types';
-import { Hash, AccountId, Null, u32, Text } from '@polkadot/types';
+import { AccountId, Null, u32, Text } from '@polkadot/types';
 import { EnumType, Struct, Vector, Tuple } from '@polkadot/types/codec';
-import { blake2AsU8a } from '@polkadot/util-crypto';
-import { u8aConcat } from '@polkadot/util';
-import { stringToBytes } from './util';
 
 class Signaling extends Null { }
 
@@ -77,3 +72,4 @@ export const GovernanceTypes = {
     ProposalCategory,
     ProposalRecord,
 };
+export const VariableLengthGovernanceTypes : string[] = [ ];
