@@ -3,12 +3,7 @@
 import program from 'commander';
 import Keyring from '@polkadot/keyring';
 import { isHex, hexToU8a, stringToU8a } from '@polkadot/util/';
-import { ApiPromise } from '@polkadot/api';
-import { WsProvider } from '@polkadot/rpc-provider';
-
 import { isQuery, makeQuery, isTx, makeTx, queryType, txType } from './util';
-import { IdentityTypes } from './identity';
-import { GovernanceTypes } from './governance';
 import { default as initApi } from './index';
 
 import { version } from '../package.json';

@@ -2,7 +2,8 @@ import fs from 'fs';
 import { ApiPromise } from '@polkadot/api';
 import { KeyringPair } from '@polkadot/keyring/types';
 import { compactAddLength, stringToU8a } from '@polkadot/util';
-import { Type, Metadata } from '@polkadot/types';
+import { Type } from '@polkadot/types';
+import { VariableLengthTypes } from './index';
 
 export const stringToBytes = (s: string) => {
   return compactAddLength(stringToU8a(s));
@@ -21,8 +22,7 @@ const convertArgs = (args: string[], types: Type[]) => {
     for (let i = 0; i < args.length; ++i) {
         const typeName = types[i].toString();
         const arg = args[i];
-        console.log(typeName);
-        if (typeName === 'Bytes' || typeName === 'Text') {
+        if (typeName === 'Bytes' || typeName === 'Text' || VariableLengthTypes.includes(typeName)) {
             resultArgs.push(stringToBytes(arg));
         } else {
             resultArgs.push(arg);
