@@ -73,13 +73,17 @@ export const makeTx = async (api:  ApiPromise, mod:  string, func: string, user:
     }
     const txFunc = api.tx[mod][func];
 
+    let convertedArgs = [];
     if (mod === 'upgradeKey' && func === 'upgrade') {
-      args = [fs.readFileSync(args[0], 'utf8')];
-    }
-
-    const convertedArgs = convertArgs(args, txFunc.meta.arguments.map((m) => m.type));
-    if (convertedArgs instanceof Error) {
-        return convertedArgs;
+        const wasm = fs.readFileSync(args[0]).toString('hex');
+        convertedArgs = [`0x${wasm}`];
+    } else {
+        const result = convertArgs(args, txFunc.meta.arguments.map((m) => m.type));
+        if (result instanceof Error) {
+            return result;
+        } else {
+            convertedArgs = result;
+        }
     }
 
     const txNonce = await api.query.system.accountNonce(user.address());
