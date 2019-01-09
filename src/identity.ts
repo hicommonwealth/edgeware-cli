@@ -1,5 +1,6 @@
 import { Bytes, AccountId, Text, u32, BlockNumber, Null } from '@polkadot/types';
 import { Option, Struct, EnumType } from '@polkadot/types/codec';
+import { unwrapOrNull } from './util';
 
 class MetadataRecord extends Struct {
   constructor (value: any) {
@@ -20,8 +21,8 @@ class MetadataRecord extends Struct {
   }
 }
 
-class Registered extends BlockNumber { }
-class Attested extends BlockNumber { }
+class Registered extends Null { }
+class Attested extends Null { }
 class Verified extends Null { }
 
 // TODO: One thing that bugs me is that console.log()-ing an IdentityStage
@@ -44,6 +45,7 @@ class IdentityRecord extends Struct {
       account: AccountId,
       identity: Bytes,
       stage: IdentityStage,
+      expiration_time: Option.with(BlockNumber),
       proof: Option.with(Text),
       metadata: Option.with(MetadataRecord),
     }, value);
@@ -57,21 +59,17 @@ class IdentityRecord extends Struct {
   get stage (): IdentityStage {
     return this.get('stage') as IdentityStage;
   }
+  get expiration_time(): BlockNumber | null {
+    const opt = this.get('expiration_time') as Option<BlockNumber>;
+    return unwrapOrNull(opt);
+  }
   get proof (): Text | null {
-    const p = this.get('proof') as Option<Text>;
-    if (p.isNone) {
-      return null;
-    } else {
-      return p.unwrap();
-    }
+    const opt = this.get('proof') as Option<Text>;
+    return unwrapOrNull(opt);
   }
   get metadata (): MetadataRecord | null {
-    const mdOpt = this.get('metadata') as Option<MetadataRecord>;
-    if (mdOpt.isNone) {
-      return null;
-    } else {
-      return mdOpt.unwrap();
-    }
+    const opt = this.get('metadata') as Option<MetadataRecord>;
+    return unwrapOrNull(opt);
   }
 }
 

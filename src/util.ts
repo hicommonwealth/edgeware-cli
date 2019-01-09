@@ -3,7 +3,17 @@ import { ApiPromise } from '@polkadot/api';
 import { KeyringPair } from '@polkadot/keyring/types';
 import { compactAddLength, stringToU8a } from '@polkadot/util';
 import { Type } from '@polkadot/types';
+import { Option } from '@polkadot/types/codec';
+import { Codec } from '@polkadot/types/types';
 import { VariableLengthTypes } from './index';
+
+export function unwrapOrNull<T extends Codec>(opt: Option<T>) : T | null {
+    if (opt.isNone) {
+        return null;
+    } else {
+        return opt.unwrap();
+    }
+}
 
 export const stringToBytes = (s: string) => {
   return compactAddLength(stringToU8a(s));
