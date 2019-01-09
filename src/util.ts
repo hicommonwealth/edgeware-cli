@@ -1,4 +1,3 @@
-import fs from 'fs';
 import { ApiPromise } from '@polkadot/api';
 import { KeyringPair } from '@polkadot/keyring/types';
 import { compactAddLength, stringToU8a } from '@polkadot/util';
@@ -85,8 +84,8 @@ export const makeTx = async (api:  ApiPromise, mod:  string, func: string, user:
 
     let convertedArgs = [];
     if (mod === 'upgradeKey' && func === 'upgrade') {
-        const wasm = fs.readFileSync(args[0]).toString('hex');
-        convertedArgs = [`0x${wasm}`];
+        // CLI only -- do not convert in upgrade case.
+        convertedArgs = args;
     } else {
         const result = convertArgs(args, txFunc.meta.arguments.map((m) => m.type));
         if (result instanceof Error) {

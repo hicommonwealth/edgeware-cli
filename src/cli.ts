@@ -1,5 +1,6 @@
 #!/usr/bin/env ts-node
 
+import fs from 'fs';
 import program from 'commander';
 import Keyring from '@polkadot/keyring';
 import { isHex, hexToU8a, stringToU8a } from '@polkadot/util/';
@@ -71,6 +72,10 @@ program.version(version)
         : stringToU8a(program.seed.padEnd(32, ' '));
 
       const user = keyring.addFromSeed(seed);
+      if (mod === 'upgradeKey' && func === 'upgrade') {
+          const wasm = fs.readFileSync(args[0]).toString('hex');
+          args = [`0x${wasm}`];
+      }
       try {
         const result = await makeTx(api, mod, func, user, args);
         console.log(result.toString());
