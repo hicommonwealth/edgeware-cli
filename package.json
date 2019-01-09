@@ -1,10 +1,10 @@
 {
   "name": "edgeware-api",
-  "version": "0.2.14",
+  "version": "0.2.16",
   "license": "LicenseRef-LICENSE",
-  "main": "dist/index.js",
+  "main": "dist/src/index.js",
   "files": [
-      "dist/*"
+      "dist/"
   ],
   "dependencies": {
     "@polkadot/api": "^0.35.12",
