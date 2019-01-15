@@ -37,6 +37,23 @@ program.version(version)
     const api = await initApi(program.remoteNode);
     await api.isReady;
 
+    if (func.toLowerCase() === 'list') {
+      if (api.query[mod] && api.tx[mod]) {
+        console.log('\nQueries:');
+        for (const key of Object.keys(api.query[mod])) {
+          console.log(queryType(api, mod, key));
+        }
+        console.log('\nTransactions:');
+        for (const key of Object.keys(api.tx[mod])) {
+          console.log(txType(api, mod, key));
+        }
+        process.exit(0);
+      } else {
+        console.error(`No module ${mod} found.`);
+        process.exit(1);
+      }
+    }
+
     if (isQuery(api, mod, func)) {
       if (program.types) {
         console.log(queryType(api, mod, func));
@@ -48,7 +65,7 @@ program.version(version)
         console.log(result ? result.toString() : result);
         process.exit(0);
       } catch (err) {
-        console.log('Failed: ', err);
+        console.error('Failed: ', err);
         process.exit(1);
       }
     }
@@ -83,7 +100,7 @@ program.version(version)
         console.log(JSON.stringify(result));
         process.exit(0);
       } catch (err) {
-        console.log('Failed: ', err);
+        console.error('Failed: ', err);
         process.exit(1);
       }
     }
