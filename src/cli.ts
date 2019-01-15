@@ -37,6 +37,18 @@ program.version(version)
     const api = await initApi(program.remoteNode);
     await api.isReady;
 
+    // output a seed's public key with: `yarn api decodeSeed <seed>`
+    if (mod.toLowerCase() === 'decodeseed') {
+      const keyring = new Keyring();
+      const seed = isHex(func)
+      ? hexToU8a(func.padEnd(32, ' '))
+      : stringToU8a(func.padEnd(32, ' '));
+
+      const user = keyring.addFromSeed(seed);
+      console.log(user.address());
+    }
+
+    // list all the txs and queries within mod with: `yarn api <mod> list`
     if (func.toLowerCase() === 'list') {
       if (api.query[mod] && api.tx[mod]) {
         console.log('\nQueries:');
