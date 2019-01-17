@@ -34,6 +34,7 @@ program.version(version)
     }
 
     const api = await initApi(program.remoteNode);
+    await api.isReady;
 
     if (isQuery(api, mod, func)) {
       if (program.types) {
