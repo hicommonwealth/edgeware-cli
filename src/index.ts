@@ -16,6 +16,6 @@ export default async function (remoteNodeUrl: string) {
       ...GovernanceTypes,
     },
   };
-
-  return await ApiPromise.create(options);
+  const api = new ApiPromise(options);
+  return api;
 }
