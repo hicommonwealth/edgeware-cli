@@ -1,11 +1,9 @@
-import { AccountId, Null, u32, Text, BlockNumber } from '@polkadot/types';
+import { AccountId, Null, u32, Text, BlockNumber, u64 } from '@polkadot/types';
 import { EnumType, Struct, Vector, Tuple, Option } from '@polkadot/types/codec';
 import { unwrapOrNull } from './util';
 
 class Signaling extends Null { }
-
 class Funding extends Null { }
-
 class Upgrade extends Null { }
 
 class ProposalCategory extends EnumType<Signaling | Funding | Upgrade> {
@@ -45,6 +43,7 @@ class ProposalRecord extends Struct {
       title: Text,
       contents: Text,
       comments: Vector.with(ProposalComment),
+      vote_id: u64,
     }, value);
   }
   get index (): u32 {
@@ -72,10 +71,21 @@ class ProposalRecord extends Struct {
   get comments () : Vector<ProposalComment> {
     return this.get('comments') as Vector<ProposalComment>;
   }
+  get vote_id () : u64 {
+    return this.get('vote_id') as u64;
+  }
 }
 
 export const GovernanceTypes = {
-    ProposalCategory,
-    ProposalRecord,
+  Signaling,
+  Funding,
+  Upgrade,
+  PreVoting,
+  Voting,
+  Completed,
+  ProposalStage,
+  ProposalComment,
+  ProposalCategory,
+  ProposalRecord,
 };
 export const VariableLengthGovernanceTypes : string[] = [ ];

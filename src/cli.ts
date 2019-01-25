@@ -68,9 +68,8 @@ program.version(version)
       const keyring = new Keyring();
       // TODO: make sure seed is properly formatted (32 byte hex string)
 
-      const seed = isHex(program.seed)
-        ? hexToU8a(program.seed.padEnd(32, ' '))
-        : stringToU8a(program.seed.padEnd(32, ' '));
+      const seedStr = program.seed.padEnd(32, ' ');
+      const seed = isHex(program.seed) ? hexToU8a(seedStr) : stringToU8a(seedStr);
 
       const user = keyring.addFromSeed(seed);
       if (mod === 'upgradeKey' && func === 'upgrade') {
