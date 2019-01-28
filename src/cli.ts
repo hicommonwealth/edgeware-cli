@@ -22,7 +22,7 @@ program.version(version)
 
     if (typeof program.remoteNode === 'undefined') {
       console.error('Defaulting to local node 127.0.0.1:9944');
-      program.remoteNode = '127.0.0.1:9944';
+      program.remoteNode = 'ws://127.0.0.1:9944';
     } else if (program.remoteNode.indexOf(':') === -1) {
       program.remoteNode += ':9944';
     }

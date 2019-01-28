@@ -23,7 +23,7 @@ export interface ITypeSignature {
     return?: Type;
 }
 
-const convertArgs = (args: string[], types: Type[]) => {
+const convertArgs = (args: Array<string | object>, types: Type[]) => {
     if (args.length !== types.length) {
         return new Error(`incorrect number of arguments. passed: ${args.length}, required: ${types.length}`);
     }
@@ -31,7 +31,10 @@ const convertArgs = (args: string[], types: Type[]) => {
     for (let i = 0; i < args.length; ++i) {
         const typeName = types[i].toString();
         const arg = args[i];
-        if (typeName === 'Bytes' || typeName === 'Text' || VariableLengthTypes.includes(typeName)) {
+        if (typeof arg === 'string'
+                && (typeName === 'Bytes'
+                || typeName === 'Text'
+                || VariableLengthTypes.includes(typeName))) {
             resultArgs.push(stringToBytes(arg));
         } else {
             resultArgs.push(arg);
@@ -53,7 +56,7 @@ export const queryType = (api: ApiPromise, mod: string, func: string) => {
     }
 };
 
-export const makeQuery = async (api:  ApiPromise, mod:  string, func: string, args: string[]) => {
+export const makeQuery = async (api:  ApiPromise, mod:  string, func: string, args: Array<string | object>) => {
     const query = api.query[mod][func];
     const types = query.meta.type.isMap ? [query.meta.type.asMap.key] : [];
     const convertedArgs = convertArgs(args, types);
@@ -76,7 +79,13 @@ export const txType = (api: ApiPromise, mod: string, func: string) => {
     return result + ') -> ()';
 };
 
-export const makeTx = async (api: ApiPromise, mod: string, func: string, user: KeyringPair, args: string[]) => {
+export const makeTx = async (
+    api: ApiPromise,
+    mod: string,
+    func: string,
+    user: KeyringPair,
+    args: Array<string | object>,
+) => {
     if (!isTx(api, mod, func)) {
         return new Error(`Tx ${mod}.${func} does not exist!`);
     }
