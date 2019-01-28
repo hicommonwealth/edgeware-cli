@@ -1,7 +1,7 @@
 {
   "name": "edgeware-api",
-  "version": "0.2.30",
-  "license": "LicenseRef-LICENSE",
+  "version": "0.2.31",
+  "license": "GPL3.0",
   "main": "dist/index.js",
   "files": [
     "dist/"

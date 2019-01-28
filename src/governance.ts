@@ -3,7 +3,7 @@ import { EnumType, Struct, Vector, Tuple, Option } from '@polkadot/types/codec';
 import { unwrapOrNull } from './util';
 
 class Signaling extends Null { }
-class Funding extends Null { }
+class Funding extends u32 { }
 class Upgrade extends Null { }
 
 class ProposalCategory extends EnumType<Signaling | Funding | Upgrade> {
