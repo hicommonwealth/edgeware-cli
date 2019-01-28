@@ -76,7 +76,7 @@ export const txType = (api: ApiPromise, mod: string, func: string) => {
     return result + ') -> ()';
 };
 
-export const makeTx = async (api:  ApiPromise, mod:  string, func: string, user: KeyringPair, args: string[]) => {
+export const makeTx = async (api: ApiPromise, mod: string, func: string, user: KeyringPair, args: string[]) => {
     if (!isTx(api, mod, func)) {
         return new Error(`Tx ${mod}.${func} does not exist!`);
     }

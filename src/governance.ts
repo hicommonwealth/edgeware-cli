@@ -55,12 +55,12 @@ class ProposalRecord extends Struct {
   get stage (): ProposalStage {
     return this.get('stage') as ProposalStage;
   }
-  get category () : ProposalCategory {
-    return this.get('category') as ProposalCategory;
-  }
   get transition_block () : BlockNumber | null {
     const opt = this.get('transition_block') as Option<BlockNumber>;
     return unwrapOrNull(opt);
+  }
+  get category () : ProposalCategory {
+    return this.get('category') as ProposalCategory;
   }
   get title () : Text {
     return this.get('title') as Text;
