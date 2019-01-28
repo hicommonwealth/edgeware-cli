@@ -11,10 +11,10 @@ class Completed extends Null { }
 class VoteStage extends EnumType<PreVoting | Commit | Voting | Completed> {
   constructor (value?: string, index?: number) {
       super({
-          PreVoting,
-          Commit,
-          Voting,
-          Completed,
+          prevoting: PreVoting,
+          commit: Commit,
+          voting: Voting,
+          completed: Completed,
     }, value, index);
   }
 }
@@ -27,10 +27,10 @@ class AnonymousMerkle extends Null { }
 class VoteType extends EnumType<Binary | MultiOption | AnonymousRing | AnonymousMerkle> {
   constructor (value?: string, index?: number) {
     super({
-      Binary,
-      MultiOption,
-      Voting,
-      Completed,
+      binary: Binary,
+      multioption: MultiOption,
+      anonymousring: AnonymousRing,
+      anonymousmerkle: AnonymousMerkle,
     }, value, index);
   }
 }
@@ -41,8 +41,8 @@ class OneCoin extends Null { }
 class TallyType extends EnumType<OnePerson | OneCoin> {
   constructor (value?: string, index?: number) {
     super({
-      OnePerson,
-      OneCoin,
+      oneperson: OnePerson,
+      onecoin: OneCoin,
     }, value, index);
   }
 }

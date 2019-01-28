@@ -32,9 +32,9 @@ class Verified extends Null { }
 class IdentityStage extends EnumType<Registered | Attested | Verified> {
   constructor (value?: string, index?: number) {
     super({
-      Registered,
-      Attested,
-      Verified,
+      registered: Registered,
+      attested: Attested,
+      verified: Verified,
     }, value, index);
   }
 }

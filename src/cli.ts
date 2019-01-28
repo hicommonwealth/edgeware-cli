@@ -44,6 +44,7 @@ program.version(version)
       console.log(`Making query: ${mod}.${func}("${args}")`);
       try {
         const result = await makeQuery(api, mod, func, args);
+        // TODO: fix this result-fetching code to handle BN correctly
         console.log(result ? result.toString() : result);
         process.exit(0);
       } catch (err) {

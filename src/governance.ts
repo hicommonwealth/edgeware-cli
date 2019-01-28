@@ -9,9 +9,9 @@ class Upgrade extends Null { }
 class ProposalCategory extends EnumType<Signaling | Funding | Upgrade> {
   constructor (value?: string, index?: number) {
       super({
-          Signaling,
-          Funding,
-          Upgrade,
+          signaling: Signaling,
+          funding: Funding,
+          upgrade: Upgrade,
     }, value, index);
   }
 }
@@ -23,9 +23,9 @@ class Completed extends Null { }
 class ProposalStage extends EnumType<PreVoting | Voting | Completed> {
   constructor (value?: string, index?: number) {
     super({
-      PreVoting,
-      Voting,
-      Completed,
+      prevoting: PreVoting,
+      voting: Voting,
+      completed: Completed,
     }, value, index);
   }
 }
