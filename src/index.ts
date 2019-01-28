@@ -12,7 +12,7 @@ export const VariableLengthTypes = [
 
 export default async function (remoteNodeUrl: string) {
   const options = {
-    provider : new WsProvider('ws://' + remoteNodeUrl),
+    provider : new WsProvider(remoteNodeUrl),
     types : {
       ...IdentityTypes,
       ...GovernanceTypes,
