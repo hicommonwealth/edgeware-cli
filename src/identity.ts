@@ -88,4 +88,3 @@ const CurrentTypes = {
 };
 
 export const IdentityTypes = { ...ArchivedTypes, ...CurrentTypes };
-export const VariableLengthIdentityTypes = [ 'Claim', 'Attestation' ];

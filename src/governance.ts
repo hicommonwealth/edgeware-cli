@@ -88,4 +88,3 @@ export const GovernanceTypes = {
   ProposalCategory,
   ProposalRecord,
 };
-export const VariableLengthGovernanceTypes : string[] = [ ];

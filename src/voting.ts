@@ -115,4 +115,3 @@ export const VotingTypes = {
   VoteData,
   VoteRecord,
 };
-export const VariableLengthVotingTypes : string[] = [ ];

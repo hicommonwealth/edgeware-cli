@@ -78,7 +78,7 @@ program.version(version)
       }
       try {
         const result = await makeTx(api, mod, func, user, args);
-        console.log(result.toString());
+        console.log(JSON.stringify(result));
         process.exit(0);
       } catch (err) {
         console.log('Failed: ', err);
