@@ -44,7 +44,7 @@ const convertArgs = (args: Array<string | object>, types: Type[]) => {
 };
 
 export const isQuery = (api: ApiPromise, mod: string, func: string) => {
-    return api.query[mod] && api.query[mod][func];
+    return api.query[mod] && !!api.query[mod][func];
 };
 
 export const queryType = (api: ApiPromise, mod: string, func: string) => {
