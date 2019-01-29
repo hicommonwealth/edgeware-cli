@@ -105,7 +105,7 @@ export const makeTx = async (
     }
 
     const txNonce = await api.query.system.accountNonce(user.address());
-    if (!txNonce) {
+    if (!txNonce || typeof txNonce === 'function') {
         return new Error('Failed to get nonce!');
     }
     const tx = txFunc(...convertedArgs);
