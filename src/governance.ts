@@ -1,6 +1,5 @@
-import { AccountId, Null, u32, Text, BlockNumber, u64 } from '@polkadot/types';
-import { EnumType, Struct, Vector, Tuple, Option } from '@polkadot/types/codec';
-import { unwrapOrNull } from './util';
+import { AccountId, Null, u32, Text, u64, Moment } from '@polkadot/types';
+import { EnumType, Struct, Vector, Tuple } from '@polkadot/types/codec';
 
 class Signaling extends Null { }
 class Funding extends u32 { }
@@ -38,7 +37,7 @@ class ProposalRecord extends Struct {
       index: u32,
       author: AccountId,
       stage: ProposalStage,
-      transition_block: Option.with(BlockNumber),
+      transition_time: Moment,
       category: ProposalCategory,
       title: Text,
       contents: Text,
@@ -55,9 +54,8 @@ class ProposalRecord extends Struct {
   get stage (): ProposalStage {
     return this.get('stage') as ProposalStage;
   }
-  get transition_block () : BlockNumber | null {
-    const opt = this.get('transition_block') as Option<BlockNumber>;
-    return unwrapOrNull(opt);
+  get transition_block () : Date {
+    return Moment.decodeMoment(this.get('transition_time') as Moment);
   }
   get category () : ProposalCategory {
     return this.get('category') as ProposalCategory;
