@@ -54,7 +54,7 @@ class ProposalRecord extends Struct {
   get stage (): ProposalStage {
     return this.get('stage') as ProposalStage;
   }
-  get transition_block () : Date {
+  get transition_time () : Date {
     return Moment.decodeMoment(this.get('transition_time') as Moment);
   }
   get category () : ProposalCategory {
