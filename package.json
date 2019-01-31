@@ -1,21 +1,21 @@
 {
   "name": "edgeware-api",
-  "version": "0.3.1",
-  "license": "GPL3.0",
+  "version": "0.3.4",
+  "license": "GPL-3.0",
   "main": "dist/index.js",
   "files": [
     "dist/"
   ],
   "dependencies": {
-    "@polkadot/api": "^0.41.5",
-    "@polkadot/api-derive": "^0.41.5",
-    "@polkadot/rpc-core": "^0.41.5",
-    "@polkadot/rpc-provider": "^0.41.5",
-    "@polkadot/rpc-rx": "^0.41.5",
-    "@polkadot/extrinsics": "^0.41.5",
-    "@polkadot/jsonrpc": "^0.41.5",
-    "@polkadot/storage": "^0.41.5",
-    "@polkadot/types": "^0.41.5",
+    "@polkadot/api": "^0.41.11",
+    "@polkadot/api-derive": "^0.41.11",
+    "@polkadot/rpc-core": "^0.41.11",
+    "@polkadot/rpc-provider": "^0.41.11",
+    "@polkadot/rpc-rx": "^0.41.11",
+    "@polkadot/extrinsics": "^0.41.11",
+    "@polkadot/jsonrpc": "^0.41.11",
+    "@polkadot/storage": "^0.41.11",
+    "@polkadot/types": "^0.41.11",
     "commander": "^2.19.0"
   },
   "scripts": {

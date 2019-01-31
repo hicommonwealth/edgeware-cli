@@ -95,7 +95,7 @@ program.version(version)
 program.on('--help', () => {
   console.log('');
   console.log('Examples (TODO):');
-  console.log('  yarn api --seed Alice identity publish "www.github.com/drewstone"\n');
+  console.log('  yarn api --seed Alice identity register "www.github.com/drewstone"\n');
 });
 
 program.parse(process.argv);
