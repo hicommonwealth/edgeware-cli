@@ -42,6 +42,7 @@ class IdentityRecord extends Struct {
   constructor (value: any) {
     super({
       account: AccountId,
+      identity_type: Text,
       identity: Bytes,
       stage: IdentityStage,
       expiration_time: Moment,
@@ -82,7 +83,7 @@ const CurrentTypes = {
   IdentityStage,
   IdentityRecord,
   MetadataRecord,
-  IdentityType: Bytes,
+  IdentityType: Text,
   Attestation: Bytes,
 };
 
