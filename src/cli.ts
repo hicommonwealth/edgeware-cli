@@ -4,7 +4,8 @@ import fs from 'fs';
 import program from 'commander';
 import Keyring from '@polkadot/keyring';
 import { isHex, hexToU8a, stringToU8a } from '@polkadot/util/';
-import { isQuery, makeQuery, isTx, makeTx, queryType, txType } from './util';
+import { CodecArg } from '@polkadot/types/types';
+import { isQuery, isTx, queryType, txType } from './util';
 import { default as initApi } from './index';
 
 import { version } from '../package.json';
@@ -43,7 +44,7 @@ program.version(version)
       }
       console.log(`Making query: ${mod}.${func}("${args}")`);
       try {
-        const result = await makeQuery(api, mod, func, args);
+        const result = await api.query[mod][func](...args);
         console.log(result ? result.toString() : result);
         process.exit(0);
       } catch (err) {
@@ -77,7 +78,8 @@ program.version(version)
           args = [`0x${wasm}`];
       }
       try {
-        const result = await makeTx(api, mod, func, user, args);
+        const cArgs: CodecArg[] = args;
+        const result = await api.tx[mod][func](...cArgs).signAndSend(user);
         console.log(JSON.stringify(result));
         process.exit(0);
       } catch (err) {
