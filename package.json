@@ -1,10 +1,6 @@
 {
   "name": "edgeware-api",
-<<<<<<< HEAD
   "version": "0.3.6",
-=======
-  "version": "0.2.21",
->>>>>>> Fixing annoying license warning.
   "license": "GPL-3.0",
   "main": "dist/index.js",
   "files": [
