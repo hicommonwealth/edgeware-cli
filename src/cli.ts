@@ -6,7 +6,7 @@ import Keyring from '@polkadot/keyring';
 import { isHex, hexToU8a, stringToU8a } from '@polkadot/util/';
 import { CodecArg } from '@polkadot/types/types';
 import { isQuery, isTx, queryType, txType } from './util';
-import { default as initApi } from './index';
+import { initApiRx } from './index';
 import { version } from '../package.json';
 
 program.version(version)
@@ -33,7 +33,7 @@ program.version(version)
       process.exit(1);
     }
 
-    const api = await initApi();
+    const api = await initApiRx();
     await api.isReady;
 
     if (isQuery(api, mod, func)) {
