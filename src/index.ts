@@ -16,7 +16,7 @@ export async function initApiRx(remoteNodeUrl?: string) {
       ...VotingTypes,
     },
   };
-  const api = ApiRx.create(options).toPromise();
+  const api = new ApiRx(options);
   return api;
 }
 
@@ -32,6 +32,6 @@ export async function initApiPromise(remoteNodeUrl?: string) {
       ...VotingTypes,
     },
   };
-  const api = ApiPromise.create(options);
+  const api = new ApiPromise(options);
   return api;
 }
