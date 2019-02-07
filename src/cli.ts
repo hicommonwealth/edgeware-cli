@@ -7,7 +7,6 @@ import { isHex, hexToU8a, stringToU8a } from '@polkadot/util/';
 import { CodecArg } from '@polkadot/types/types';
 import { isQuery, isTx, queryType, txType } from './util';
 import { default as initApi } from './index';
-
 import { version } from '../package.json';
 
 program.version(version)
@@ -34,7 +33,7 @@ program.version(version)
       process.exit(1);
     }
 
-    const api = await initApi(program.remoteNode);
+    const api = await initApi();
     await api.isReady;
 
     if (isQuery(api, mod, func)) {
@@ -79,16 +78,30 @@ program.version(version)
       }
       try {
         const cArgs: CodecArg[] = args;
-        const result = await api.tx[mod][func](...cArgs).signAndSend(user);
-        console.log(JSON.stringify(result));
-        process.exit(0);
+        const result = await api.tx[mod][func](...cArgs)
+        .signAndSend(user)
+        .subscribe(({ events = [], status, type }) => {
+          // Log transfer events
+          console.log('Transfer status:', type);
+          // Log system events once the transfer is finalised
+          if (type === 'Finalised') {
+            console.log('Completed at block hash', status.asFinalised.toHex());
+
+            console.log('Events:');
+            events.forEach(({ phase, event: { data, method, section } }) => {
+              console.log('\t', phase.toString(), `: ${section}.${method}`, data.toString());
+            });
+            process.exit(0);
+          }
+        });
+        // console.log(JSON.stringify(result));
       } catch (err) {
         console.log('Failed: ', err);
         process.exit(1);
       }
+    } else {
+      process.exit(1);
     }
-
-    process.exit(1);
   })
   .option('-s, --seed <key>', 'Public/private keypair seed')
   .option('-r, --remoteNode <url>', 'Remote node url (default: "localhost:9944").')
