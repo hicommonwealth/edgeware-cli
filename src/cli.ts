@@ -5,7 +5,7 @@ import program from 'commander';
 import Keyring from '@polkadot/keyring';
 import { isHex, hexToU8a, stringToU8a } from '@polkadot/util/';
 import { CodecArg } from '@polkadot/types/types';
-import { isQuery, isTx, queryType, txType } from './util';
+import { isQuery, isTx, queryType, txType, isDerive, deriveType } from './util';
 import { initApiRx, initApiPromise } from './index';
 import { version } from '../package.json';
 
@@ -44,6 +44,22 @@ program.version(version)
       console.log(`Making query: ${mod}.${func}("${args}")`);
       try {
         const result = await qapi.query[mod][func](...args);
+        console.log(JSON.stringify(result));
+        process.exit(0);
+      } catch (err) {
+        console.log('Failed: ', err);
+        process.exit(1);
+      }
+    }
+
+    if (isDerive(qapi, mod, func)) {
+      if (program.types) {
+        console.log(deriveType(qapi, mod, func));
+        process.exit(0);
+      }
+      console.log(`Making query: ${mod}.${func}("${args}")`);
+      try {
+        const result = await qapi.derive[mod][func](...args);
         console.log(JSON.stringify(result));
         process.exit(0);
       } catch (err) {

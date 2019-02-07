@@ -19,6 +19,15 @@ export const queryType = (api: ApiPromise, mod: string, func: string) => {
     }
 };
 
+export const isDerive = (api: ApiPromise, mod: string, func: string) => {
+    return api.derive[mod] && !!api.derive[mod][func];
+};
+
+export const deriveType = (api: ApiPromise, mod: string, func: string) => {
+    const d = api.derive[mod][func];
+    return 'Cannot get types of derive.';
+};
+
 export const isTx = (api: ApiRx, mod: string, func: string) => {
     return api.tx[mod] && api.tx[mod][func];
 };
