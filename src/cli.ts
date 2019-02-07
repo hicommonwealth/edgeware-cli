@@ -6,7 +6,7 @@ import Keyring from '@polkadot/keyring';
 import { isHex, hexToU8a, stringToU8a } from '@polkadot/util/';
 import { CodecArg } from '@polkadot/types/types';
 import { isQuery, isTx, queryType, txType } from './util';
-import { initApiRx } from './index';
+import { initApiRx, initApiPromise } from './index';
 import { version } from '../package.json';
 
 program.version(version)
@@ -33,18 +33,18 @@ program.version(version)
       process.exit(1);
     }
 
-    const api = await initApiRx();
-    await api.isReady;
+    const qapi = await initApiPromise();
+    await qapi.isReady;
 
-    if (isQuery(api, mod, func)) {
+    if (isQuery(qapi, mod, func)) {
       if (program.types) {
-        console.log(queryType(api, mod, func));
+        console.log(queryType(qapi, mod, func));
         process.exit(0);
       }
       console.log(`Making query: ${mod}.${func}("${args}")`);
       try {
-        const result = await api.query[mod][func](...args);
-        console.log(result ? result.toString() : result);
+        const result = await qapi.query[mod][func](...args);
+        console.log(JSON.stringify(result));
         process.exit(0);
       } catch (err) {
         console.log('Failed: ', err);
@@ -52,9 +52,12 @@ program.version(version)
       }
     }
 
-    if (isTx(api, mod, func)) {
+    const tapi = await initApiRx();
+    await tapi.isReady.toPromise();
+
+    if (isTx(tapi, mod, func)) {
       if (program.types) {
-        console.log(txType(api, mod, func));
+        console.log(txType(tapi, mod, func));
         process.exit(0);
       }
 
@@ -78,7 +81,7 @@ program.version(version)
       }
       try {
         const cArgs: CodecArg[] = args;
-        const result = await api.tx[mod][func](...cArgs)
+        const result = await tapi.tx[mod][func](...cArgs)
         .signAndSend(user)
         .subscribe(({ events = [], status, type }) => {
           // Log transfer events

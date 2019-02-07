@@ -6,11 +6,11 @@ export interface ITypeSignature {
     return?: Type;
 }
 
-export const isQuery = (api: ApiRx, mod: string, func: string) => {
+export const isQuery = (api: ApiPromise, mod: string, func: string) => {
     return api.query[mod] && !!api.query[mod][func];
 };
 
-export const queryType = (api: ApiRx, mod: string, func: string) => {
+export const queryType = (api: ApiPromise, mod: string, func: string) => {
     const t = api.query[mod][func].meta.type;
     if (t.isMap) {
         return `query.${mod}.${func}: ` + t.asMap.key.toString() + ' -> ' + t.asMap.value.toString();
