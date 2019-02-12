@@ -1,13 +1,13 @@
 {
   "name": "edgeware-api",
-  "version": "0.3.11",
+  "version": "0.3.12",
   "license": "GPL-3.0",
   "main": "dist/index.js",
   "files": [
     "dist/"
   ],
   "dependencies": {
-    "@polkadot/api": "^0.42.13"
+    "@polkadot/api": "^0.42.14"
   },
   "scripts": {
     "test": "mocha -r ts-node/register tests/**/*.spec.ts",
