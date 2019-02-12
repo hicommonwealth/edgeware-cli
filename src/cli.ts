@@ -6,8 +6,45 @@ import Keyring from '@polkadot/keyring';
 import { isHex, hexToU8a, stringToU8a } from '@polkadot/util/';
 import { CodecArg } from '@polkadot/types/types';
 import { isQuery, isTx, queryType, txType, isDerive, deriveType } from './util';
-import { initApiRx, initApiPromise } from './index';
 import { version } from '../package.json';
+
+import { ApiRx, ApiPromise } from '@polkadot/api';
+import { WsProvider } from '@polkadot/rpc-provider';
+import { IdentityTypes } from './identity';
+import { GovernanceTypes } from './governance';
+import { VotingTypes } from './voting';
+
+export async function initApiRx(remoteNodeUrl?: string) {
+  if (!remoteNodeUrl) {
+    remoteNodeUrl = 'ws://localhost:9944';
+  }
+  const options = {
+    provider : new WsProvider(remoteNodeUrl),
+    types : {
+      ...IdentityTypes,
+      ...GovernanceTypes,
+      ...VotingTypes,
+    },
+  };
+  const api = new ApiRx(options);
+  return api;
+}
+
+export async function initApiPromise(remoteNodeUrl?: string) {
+  if (!remoteNodeUrl) {
+    remoteNodeUrl = 'ws://localhost:9944';
+  }
+  const options = {
+    provider : new WsProvider(remoteNodeUrl),
+    types : {
+      ...IdentityTypes,
+      ...GovernanceTypes,
+      ...VotingTypes,
+    },
+  };
+  const api = new ApiPromise(options);
+  return api;
+}
 
 program.version(version)
   .name('yarn api')

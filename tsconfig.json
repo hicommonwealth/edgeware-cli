@@ -22,6 +22,7 @@
     "./src/*"
   ],
   "exclude": [
-    "./src/cli.ts"
+    "./src/cli.ts",
+    "./src/util.ts"
   ]
 }
