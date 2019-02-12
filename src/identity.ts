@@ -1,7 +1,7 @@
 import { Bytes, AccountId, Text, u32, Null, Moment } from '@polkadot/types';
 import { Option, Struct, EnumType } from '@polkadot/types/codec';
 
-class MetadataRecord extends Struct {
+export class MetadataRecord extends Struct {
   constructor (value: any) {
     super({
       avatar: Text,
@@ -20,15 +20,15 @@ class MetadataRecord extends Struct {
   }
 }
 
-class Registered extends Null { }
-class Attested extends Null { }
-class Verified extends Null { }
+export class Registered extends Null { }
+export class Attested extends Null { }
+export class Verified extends Null { }
 
 // TODO: One thing that bugs me is that console.log()-ing an IdentityStage
 //       prints the *value* of the stage (aka the expiration time) rather than
 //       the *type*. Unfortunately, I don't know how to fix this. It shouldn't
 //       have an impact on functionality, though.
-class IdentityStage extends EnumType<Registered | Attested | Verified> {
+export class IdentityStage extends EnumType<Registered | Attested | Verified> {
   constructor (value?: string, index?: number) {
     super({
       registered: Registered,
@@ -38,7 +38,7 @@ class IdentityStage extends EnumType<Registered | Attested | Verified> {
   }
 }
 
-class IdentityRecord extends Struct {
+export class IdentityRecord extends Struct {
   constructor (value: any) {
     super({
       account: AccountId,

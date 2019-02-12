@@ -3,12 +3,12 @@ import { EnumType, Struct, Vector, Tuple, Option } from '@polkadot/types/codec';
 import U8aFixed from '@polkadot/types/codec/U8aFixed';
 import { AnyU8a } from '@polkadot/types/types';
 
-class PreVoting extends Null { }
-class Commit extends Null { }
-class Voting extends Null { }
-class Completed extends Null { }
+export class PreVoting extends Null { }
+export class Commit extends Null { }
+export class Voting extends Null { }
+export class Completed extends Null { }
 
-class VoteStage extends EnumType<PreVoting | Commit | Voting | Completed> {
+export class VoteStage extends EnumType<PreVoting | Commit | Voting | Completed> {
   constructor (value?: string, index?: number) {
       super({
           prevoting: PreVoting,
@@ -19,12 +19,12 @@ class VoteStage extends EnumType<PreVoting | Commit | Voting | Completed> {
   }
 }
 
-class Binary extends Null { }
-class MultiOption extends Null { }
-class AnonymousRing extends Null { }
-class AnonymousMerkle extends Null { }
+export class Binary extends Null { }
+export class MultiOption extends Null { }
+export class AnonymousRing extends Null { }
+export class AnonymousMerkle extends Null { }
 
-class VoteType extends EnumType<Binary | MultiOption | AnonymousRing | AnonymousMerkle> {
+export class VoteType extends EnumType<Binary | MultiOption | AnonymousRing | AnonymousMerkle> {
   constructor (value?: string, index?: number) {
     super({
       binary: Binary,
@@ -35,10 +35,10 @@ class VoteType extends EnumType<Binary | MultiOption | AnonymousRing | Anonymous
   }
 }
 
-class OnePerson extends Null { }
-class OneCoin extends Null { }
+export class OnePerson extends Null { }
+export class OneCoin extends Null { }
 
-class TallyType extends EnumType<OnePerson | OneCoin> {
+export class TallyType extends EnumType<OnePerson | OneCoin> {
   constructor (value?: string, index?: number) {
     super({
       oneperson: OnePerson,
@@ -47,15 +47,15 @@ class TallyType extends EnumType<OnePerson | OneCoin> {
   }
 }
 
-class VoteOutcome extends U8aFixed {
+export class VoteOutcome extends U8aFixed {
   constructor (value?: AnyU8a) {
     super(value, 256);
   }
 }
 
-class Tally extends Option.with(Vector.with(Tuple.with([Balance, VoteOutcome]))) { }
+export class Tally extends Option.with(Vector.with(Tuple.with([Balance, VoteOutcome]))) { }
 
-class VoteData extends Struct {
+export class VoteData extends Struct {
   constructor (value: any) {
     super({
       initiator: AccountId,
@@ -67,9 +67,9 @@ class VoteData extends Struct {
   }
 }
 
-class AccountVotePairs extends Vector.with(Tuple.with([AccountId, VoteOutcome])) { }
+export class AccountVotePairs extends Vector.with(Tuple.with([AccountId, VoteOutcome])) { }
 
-class VoteRecord extends Struct {
+export class VoteRecord extends Struct {
   constructor (value: any) {
     super({
       id: u64,

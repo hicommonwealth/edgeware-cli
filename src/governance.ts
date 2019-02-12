@@ -1,11 +1,11 @@
 import { AccountId, Null, u32, Text, u64, Moment } from '@polkadot/types';
 import { EnumType, Struct, Vector, Tuple } from '@polkadot/types/codec';
 
-class Signaling extends Null { }
-class Funding extends u32 { }
-class Upgrade extends Null { }
+export class Signaling extends Null { }
+export class Funding extends u32 { }
+export class Upgrade extends Null { }
 
-class ProposalCategory extends EnumType<Signaling | Funding | Upgrade> {
+export class ProposalCategory extends EnumType<Signaling | Funding | Upgrade> {
   constructor (value?: string, index?: number) {
       super({
           signaling: Signaling,
@@ -15,11 +15,11 @@ class ProposalCategory extends EnumType<Signaling | Funding | Upgrade> {
   }
 }
 
-class PreVoting extends Null { }
-class Voting extends Null { }
-class Completed extends Null { }
+export class PreVoting extends Null { }
+export class Voting extends Null { }
+export class Completed extends Null { }
 
-class ProposalStage extends EnumType<PreVoting | Voting | Completed> {
+export class ProposalStage extends EnumType<PreVoting | Voting | Completed> {
   constructor (value?: string, index?: number) {
     super({
       prevoting: PreVoting,
@@ -29,9 +29,9 @@ class ProposalStage extends EnumType<PreVoting | Voting | Completed> {
   }
 }
 
-class ProposalComment extends Tuple.with([Text, AccountId]) { }
+export class ProposalComment extends Tuple.with([Text, AccountId]) { }
 
-class ProposalRecord extends Struct {
+export class ProposalRecord extends Struct {
   constructor (value: any) {
     super({
       index: u32,
