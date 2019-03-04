@@ -65,6 +65,21 @@ export class VoteData extends Struct {
       is_commit_reveal: bool,
     }, value);
   }
+  get initiator (): AccountId {
+    return this.get('initiator') as AccountId;
+  }
+  get stage (): VoteStage {
+    return this.get('stage') as VoteStage;
+  }
+  get vote_type (): VoteType {
+    return this.get('vote_type') as VoteType;
+  }
+  get tally_type (): TallyType {
+    return this.get('tally_type') as TallyType;
+  }
+  get is_commit_reveal (): bool {
+    return this.get('is_commit_reveal') as bool;
+  }
 }
 
 export class AccountVotePairs extends Vector.with(Tuple.with([AccountId, VoteOutcome])) { }
