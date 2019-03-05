@@ -1,5 +1,5 @@
 {
-  "name": "edgeware-api",
+  "name": "edgeware-cli",
   "version": "0.3.14",
   "license": "GPL-3.0",
   "main": "dist/index.js",

@@ -1,21 +1,12 @@
 {
   "compilerOptions": {
-    "typeRoots": [
-      "./node_modules/@polkadot/ts",
-      "./node_modules/@types"
-    ],
-    "declaration": true,
-    "outDir": "dist",
+    "allowJs": true,
     "target": "esnext",
-    "esModuleInterop": true,
-    "allowSyntheticDefaultImports": true,
-    "strict": true,
-    "forceConsistentCasingInFileNames": true,
-    "module": "commonjs",
     "moduleResolution": "node",
-    "noEmit": false,
-    "jsx": "preserve",
-    "skipLibCheck": false,
+    "module": "commonjs",
+    "allowSyntheticDefaultImports": true,
+    "outDir": "./build",
+    "baseUrl": "./src/scripts",
     "resolveJsonModule": true
   },
   "include": [
@@ -23,6 +14,7 @@
   ],
   "exclude": [
     "./src/cli.ts",
-    "./src/util.ts"
+    "./src/util.ts",
+    "./node_modules"
   ]
 }

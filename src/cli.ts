@@ -1,24 +1,67 @@
 #!/usr/bin/env ts-node
 
-import fs from 'fs';
-import program from 'commander';
+import { version } from '../package.json';
+const fs = require('fs');
+const program = require('commander');
 import Keyring from '@polkadot/keyring';
 import { isHex, hexToU8a, stringToU8a } from '@polkadot/util/';
 import { CodecArg } from '@polkadot/types/types';
-import { isQuery, isTx, queryType, txType, isDerive, deriveType } from './util';
-import { version } from '../package.json';
-
-import { ApiRx, ApiPromise } from '@polkadot/api';
+import { ApiRx } from '@polkadot/api';
 import { WsProvider } from '@polkadot/rpc-provider';
 import { IdentityTypes } from './identity';
-import { GovernanceTypes } from './governance';
 import { VotingTypes } from './voting';
+import { GovernanceTypes } from './governance';
+import { ApiOptions } from '@polkadot/api/types';
+import { switchMap } from 'rxjs/operators';
+import { of, combineLatest } from 'rxjs';
 
-export async function initApiRx(remoteNodeUrl?: string) {
+const EDGEWARE_TESTNET_PUBLIC_CONN = '18.222.29.148:9944';
+
+const isQuery = (api: ApiRx, mod: string, func: string) => {
+  return api.query[mod] && !!api.query[mod][func];
+};
+
+const queryType = (api: ApiRx, mod: string, func: string) => {
+  const t = api.query[mod][func].meta.type;
+  if (t.isMap) {
+    return `query.${mod}.${func}: ` + t.asMap.key.toString() + ' -> ' + t.asMap.value.toString();
+  } else {
+    return `query.${mod}.${func}: ` + t.asType.toString();
+  }
+};
+
+const isDerive = (api: ApiRx, mod: string, func: string) => {
+  return api.derive[mod] && !!api.derive[mod][func];
+};
+
+const deriveType = (api: ApiRx, mod: string, func: string) => {
+  const d = api.derive[mod][func];
+  return 'Cannot get types of derive.';
+};
+
+const isTx = (api: ApiRx, mod: string, func: string) => {
+  return api.tx[mod] && api.tx[mod][func];
+};
+
+const txType = (api: ApiRx, mod: string, func: string) => {
+  const args = api.tx[mod][func].meta.arguments;
+  let result = `tx.${mod}.${func}: (`;
+  args.forEach((t) => {
+    result += t.name + ': ' + t.type + ', ';
+  });
+  return result + ') -> ()';
+};
+
+function initApiRx(remoteNodeUrl?: string) {
   if (!remoteNodeUrl) {
     remoteNodeUrl = 'ws://localhost:9944';
   }
-  const options = {
+
+  if (remoteNodeUrl.indexOf('ws://') === -1) {
+    remoteNodeUrl = `ws://${remoteNodeUrl}`;
+  }
+
+  const options: ApiOptions = {
     provider : new WsProvider(remoteNodeUrl),
     types : {
       ...IdentityTypes,
@@ -30,143 +73,129 @@ export async function initApiRx(remoteNodeUrl?: string) {
   return api;
 }
 
-export async function initApiPromise(remoteNodeUrl?: string) {
-  if (!remoteNodeUrl) {
-    remoteNodeUrl = 'ws://localhost:9944';
-  }
-  const options = {
-    provider : new WsProvider(remoteNodeUrl),
-    types : {
-      ...IdentityTypes,
-      ...GovernanceTypes,
-      ...VotingTypes,
-    },
-  };
-  const api = new ApiPromise(options);
-  return api;
-}
-
 program.version(version)
   .name('yarn api')
   .usage('<module> <function> [ARGS...]')
   .arguments('<mod> <func> [args...]')
-  .action(async (mod, func, args) => {
-    if (typeof mod === 'undefined') {
-      console.error('\nNo module provided!\n');
-      program.outputHelp();
-      process.exit(1);
-    }
-
+  .action(async (mod: string, func: string, args: string[]) => {
     if (typeof program.remoteNode === 'undefined') {
       console.error('Defaulting to local node 127.0.0.1:9944');
       program.remoteNode = 'ws://127.0.0.1:9944';
+    } else if (program.remoteNode === 'edgeware') {
+      program.remoteNode = `ws://${EDGEWARE_TESTNET_PUBLIC_CONN}`
     } else if (program.remoteNode.indexOf(':') === -1) {
       program.remoteNode += ':9944';
     }
 
-    if (typeof func === 'undefined') {
-      console.error('\nNo module function provided!\n');
-      program.outputHelp();
-      process.exit(1);
-    }
+    const listing = (func.toLowerCase() === 'list');
+    const tailing = !!program.tail;
+    let convFunc;
 
-    const qapi = await initApiPromise();
-    await qapi.isReady;
-
-    if (isQuery(qapi, mod, func)) {
-      if (program.types) {
-        console.log(queryType(qapi, mod, func));
-        process.exit(0);
+    const api = await initApiRx(program.remoteNode).isReady;
+    api.pipe(switchMap((api: ApiRx) => {
+      // List the available actions then exit
+      if (listing) {
+        if (api.query[mod]) {
+          console.log('\nQueries:');
+          for (const key of Object.keys(api.query[mod])) {
+            console.log(queryType(api, mod, key));
+          }
+        }
+        if (api.tx[mod]) {
+          console.log('\nTransactions:');
+          for (const key of Object.keys(api.tx[mod])) {
+            console.log(txType(api, mod, key));
+          }
+        }
+        if (!api.tx[mod] && !api.query[mod]) {
+          console.error(`No module ${mod} found.`);
+          process.exit(1);
+        } else {
+          process.exit(0);
+        }
       }
-      console.log(`Making query: ${mod}.${func}("${args}")`);
-      try {
-        const result = await qapi.query[mod][func](...args);
-        console.log(JSON.stringify(result));
-        process.exit(0);
-      } catch (err) {
-        console.log('Failed: ', err);
-        process.exit(1);
-      }
-    }
+      if (isQuery(api, mod, func)) {
+        if (program.types) {
+          console.log(queryType(api, mod, func));
+          process.exit(0);
+        }
 
-    if (isDerive(qapi, mod, func)) {
-      if (program.types) {
-        console.log(deriveType(qapi, mod, func));
-        process.exit(0);
-      }
-      console.log(`Making query: ${mod}.${func}("${args}")`);
-      try {
-        const result = await qapi.derive[mod][func](...args);
-        console.log(JSON.stringify(result));
-        process.exit(0);
-      } catch (err) {
-        console.log('Failed: ', err);
-        process.exit(1);
-      }
-    }
-
-    const tapi = await initApiRx();
-    await tapi.isReady.toPromise();
-
-    if (isTx(tapi, mod, func)) {
-      if (program.types) {
-        console.log(txType(tapi, mod, func));
-        process.exit(0);
+        console.log(`Making query: ${mod}.${func}("${args}")`);
+        const cArgs: CodecArg[] = args;
+        return combineLatest(of(true), api.query[mod][func](...cArgs));
       }
 
-      if (typeof program.seed === 'undefined') {
-        console.error('\nNo account seed provided!\n');
-        program.outputHelp();
-        process.exit(1);
+      if (isDerive(api, mod, func)) {
+        if (program.types) {
+          console.log(deriveType(api, mod, func));
+          process.exit(0);
+        }
+        console.log(`Making query: ${mod}.${func}("${args}")`);
+        const cArgs: CodecArg[] = args;
+        return combineLatest(of(true), api.derive[mod][func](...cArgs));
       }
+      if (isTx(api, mod, func)) {
+        if (program.types) {
+          console.log(txType(api, mod, func));
+          process.exit(0);
+        }
 
-      console.log(`Making tx: ${mod}.${func}("${args}")`);
-      const keyring = new Keyring();
-      // TODO: make sure seed is properly formatted (32 byte hex string)
+        if (typeof program.seed === 'undefined') {
+          console.error('\nNo account seed provided!\n');
+          program.outputHelp();
+          process.exit(1);
+        }
 
-      const seedStr = program.seed.padEnd(32, ' ');
-      const seed = isHex(program.seed) ? hexToU8a(seedStr) : stringToU8a(seedStr);
-
-      const user = keyring.addFromSeed(seed);
-      if (mod === 'upgradeKey' && func === 'upgrade') {
+        console.log(`Making tx: ${mod}.${func}("${args}")`);
+        const keyring = new Keyring();
+        // TODO: make sure seed is properly formatted (32 byte hex string)
+        const seedStr = program.seed.padEnd(32, ' ');
+        const seed = isHex(program.seed) ? hexToU8a(seedStr) : stringToU8a(seedStr);
+        const user = keyring.addFromSeed(seed);
+        if (mod === 'upgradeKey' && func === 'upgrade') {
           const wasm = fs.readFileSync(args[0]).toString('hex');
           args = [`0x${wasm}`];
-      }
-      try {
+        }
         const cArgs: CodecArg[] = args;
-        const result = await tapi.tx[mod][func](...cArgs)
-        .signAndSend(user)
-        .subscribe(({ events = [], status, type }) => {
-          // Log transfer events
-          console.log('Transfer status:', type);
-          // Log system events once the transfer is finalised
-          if (type === 'Finalised') {
-            console.log('Completed at block hash', status.asFinalised.toHex());
-
-            console.log('Events:');
-            events.forEach(({ phase, event: { data, method, section } }) => {
-              console.log('\t', phase.toString(), `: ${section}.${method}`, data.toString());
-            });
-            process.exit(0);
-          }
-        });
-        // console.log(JSON.stringify(result));
-      } catch (err) {
-        console.log('Failed: ', err);
-        process.exit(1);
+        return combineLatest(of(false), api.tx[mod][func](...cArgs).signAndSend(user));
       }
-    } else {
+    }))
+    .subscribe(([isQuery, result]: [boolean, any]) => {
+      if (isQuery) {
+        console.log(JSON.stringify(result));
+        if (!tailing) {
+          process.exit(0);
+        }
+      } else {
+        // Log transfer events
+        console.log('Transfer status:', result.type);
+        // Log system events once the transfer is finalised
+        if (result.type === 'Finalised') {
+          console.log('Completed at block hash', result.status.asFinalised.toHex());
+
+          console.log('Events:');
+          result.events.forEach(({ phase, event: { data, method, section } }) => {
+          console.log('\t', phase.toString(), `: ${section}.${method}`, data.toString());
+          });
+          process.exit(0);
+        }
+      }
+    }, (err) => {
+      console.log('Failed: ', err);
       process.exit(1);
-    }
+    });
   })
   .option('-s, --seed <key>', 'Public/private keypair seed')
   .option('-r, --remoteNode <url>', 'Remote node url (default: "localhost:9944").')
-  .option('-t, --types', 'Print types instead of performing action.');
+  .option('-T, --types', 'Print types instead of performing action.')
+  .option('-t, --tail', 'Tail output rather than exiting immediately.');
 
 program.on('--help', () => {
   console.log('');
   console.log('Examples (TODO):');
   console.log('  yarn api --seed Alice identity register github drewstone\n');
+  console.log('  yarn api --seed Alice balances transfer 5FmE1Adpwp1bT1oY95w59RiSPVu9QwzBGjKsE2hxemD2AFs8 1000\n');
+  console.log('  yarn api -r "18.222.29.148" balances freeBalance 5H7Jk4UDwZ3JkfbcrX2NprfZYaPJknApeqjiswKJPBPt6LRN\n');
 });
 
 program.parse(process.argv);
