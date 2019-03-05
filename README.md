@@ -1,47 +1,30 @@
-# edgeware-api
-This repo describes the API for using Edgeware's modules in an easy, consumable way for front-end applications. It is built using `create-react-app`
+# edgeware-cli
 
-To publish, first run `tsc` to build the typescript modules (see `dist/` for output), and then run `npm publish`.
+The edgeware CLI easily allows you to interact with a local or remote Edgeware node or any general substrate node. The api works 
 
-## Available Scripts
+## Usage
+1. Install the node modules with `yarn` or `npm`
+2. If you want to send transactions, have the hex format of a key ready.
+3. Call `yarn api <module> <func> [...args]` with the desired module function and args.
 
-In the project directory, you can run:
+## Options
+```
 
-### `npm start`
+Options:
+  -V, --version           output the version number
+  -s, --seed <key>        Public/private keypair seed
+  -r, --remoteNode <url>  Remote node url (default: "localhost:9944").
+  -T, --types             Print types instead of performing action.
+  -t, --tail              Tail output rather than exiting immediately.
+  -h, --help              output usage information
+```
 
-Runs the app in the development mode.<br>
-Open [http://localhost:3000](http://localhost:3000) to view it in the browser.
+## Examples
+- Transfering tokens from one's balance
+yarn api --seed Alice balances transfer 5FmE1Adpwp1bT1oY95w59RiSPVu9QwzBGjKsE2hxemD2AFs8 1000
 
-The page will reload if you make edits.<br>
-You will also see any lint errors in the console.
-a
-### `npm test`
+- Fetching an account balance from a remote node
+yarn api -r "11.101.11.101" balances freeBalance 5H7Jk4UDwZ3JkfbcrX2NprfZYaPJknApeqjiswKJPBPt6LRN
 
-Launches the test runner in the interactive watch mode.<br>
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
-a
-### `npm run build`
-a
-Builds the app for production to the `build` folder.<br>
-It correctly bundles React in production mode and optimizes the build for the best performance.
-
-The build is minified and the filenames include the hashes.<br>
-Your app is ready to be deployed!
-
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
-
-### `npm run eject`
-
-**Note: this is a one-way operation. Once you `eject`, you can’t go back!**
-
-If you aren’t satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
-
-Instead, it will copy all the configuration files and the transitive dependencies (Webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you’re on your own.
-
-You don’t have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn’t feel obligated to use this feature. However we understand that this tool wouldn’t be useful if you couldn’t customize it when you are ready for it.
-a
-## Learn More
-a
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
-
-To learn React, check out the [React documentation](https://reactjs.org/).
+- Registering an identity
+yarn api --seed Alice identity register github drewstone
