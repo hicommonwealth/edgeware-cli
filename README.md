@@ -21,10 +21,16 @@ Options:
 
 ## Examples
 - Transfering tokens from one's balance
+```
 yarn api --seed Alice balances transfer 5FmE1Adpwp1bT1oY95w59RiSPVu9QwzBGjKsE2hxemD2AFs8 1000
+```
 
 - Fetching an account balance from the Edgeware Testnet
+```
 yarn api -r edgeware balances freeBalance 5H7Jk4UDwZ3JkfbcrX2NprfZYaPJknApeqjiswKJPBPt6LRN
+```
 
 - Registering an identity
+```
 yarn api --seed Alice identity register github drewstone
+```
