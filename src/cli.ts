@@ -82,17 +82,16 @@ program.version(version)
       console.error('Defaulting to local node 127.0.0.1:9944');
       program.remoteNode = 'ws://127.0.0.1:9944';
     } else if (program.remoteNode === 'edgeware') {
-      program.remoteNode = `ws://${EDGEWARE_TESTNET_PUBLIC_CONN}`
+      program.remoteNode = `ws://${EDGEWARE_TESTNET_PUBLIC_CONN}`;
     } else if (program.remoteNode.indexOf(':') === -1) {
       program.remoteNode += ':9944';
     }
 
     const listing = (func.toLowerCase() === 'list');
     const tailing = !!program.tail;
-    let convFunc;
 
-    const api = await initApiRx(program.remoteNode).isReady;
-    api.pipe(switchMap((api: ApiRx) => {
+    const apiObservable = await initApiRx(program.remoteNode).isReady;
+    apiObservable.pipe(switchMap((api: ApiRx) => {
       // List the available actions then exit
       if (listing) {
         if (api.query[mod]) {
@@ -160,8 +159,8 @@ program.version(version)
         return combineLatest(of(false), api.tx[mod][func](...cArgs).signAndSend(user));
       }
     }))
-    .subscribe(([isQuery, result]: [boolean, any]) => {
-      if (isQuery) {
+    .subscribe(([didQuery, result]: [boolean, any]) => {
+      if (didQuery) {
         console.log(JSON.stringify(result));
         if (!tailing) {
           process.exit(0);

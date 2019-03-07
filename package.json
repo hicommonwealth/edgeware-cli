@@ -7,7 +7,7 @@
     "dist/"
   ],
   "dependencies": {
-    "@polkadot/api": "^0.42.17"
+    "@polkadot/api": "^0.46.7"
   },
   "scripts": {
     "test": "mocha -r ts-node/register tests/**/*.spec.ts",
