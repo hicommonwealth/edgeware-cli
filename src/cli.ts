@@ -15,7 +15,7 @@ import { ApiOptions } from '@polkadot/api/types';
 import { switchMap } from 'rxjs/operators';
 import { of, combineLatest } from 'rxjs';
 
-const EDGEWARE_TESTNET_PUBLIC_CONN = '18.222.29.148:9944';
+const EDGEWARE_TESTNET_PUBLIC_CONN = '18.223.143.102:9944';
 
 const isQuery = (api: ApiRx, mod: string, func: string) => {
   return api.query[mod] && !!api.query[mod][func];
