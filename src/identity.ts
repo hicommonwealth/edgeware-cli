@@ -24,10 +24,6 @@ export class Registered extends Null { }
 export class Attested extends Null { }
 export class Verified extends Null { }
 
-// TODO: One thing that bugs me is that console.log()-ing an IdentityStage
-//       prints the *value* of the stage (aka the expiration time) rather than
-//       the *type*. Unfortunately, I don't know how to fix this. It shouldn't
-//       have an impact on functionality, though.
 export class IdentityStage extends EnumType<Registered | Attested | Verified> {
   constructor (value?: string, index?: number) {
     super({
