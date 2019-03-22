@@ -148,7 +148,6 @@ program.version(version)
         console.log(`Making tx: ${mod}.${func}("${args}")`);
         const keyring = new Keyring({ type: 'sr25519' });
         const pair = keyring.addFromUri(`${process.env.MNEMONIC_PHRASE}${process.env.DERIVATION_PATH}`);
-        console.log(keyring);
         if (mod === 'upgradeKey' && func === 'upgrade') {
           const wasm = fs.readFileSync(args[0]).toString('hex');
           args = [`0x${wasm}`];
