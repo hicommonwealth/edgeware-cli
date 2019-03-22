@@ -81,6 +81,7 @@ const CurrentTypes = {
   MetadataRecord,
   IdentityType: Text,
   Attestation: Bytes,
+  Identity: Bytes,
 };
 
 export const IdentityTypes = { ...ArchivedTypes, ...CurrentTypes };

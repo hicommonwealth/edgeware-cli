@@ -1,6 +1,18 @@
 # edgeware-cli
 
-The edgeware CLI easily allows you to interact with a local or remote Edgeware node or any general substrate node. The api works 
+The edgeware CLI easily allows you to interact with a local or remote Edgeware node or any general substrate node. The api requires you to create a `.env` file with your keypair information, which will be described below.
+
+## Configuration
+Create a `.env` file with the following information:
+```
+MNEMONIC_PHRASE=...
+DERIVATION_PATH=...
+```
+Examples of some values are:
+```
+MNEMONIC_PHRASE="bottom drive obey lake curtain smoke basket hold race lonely fit walk"
+DERIVATION_PATH=//Alice
+```
 
 ## Usage
 1. Install the node modules with `yarn` or `npm`
@@ -22,7 +34,7 @@ Options:
 ## Examples
 - Transfering tokens from one's balance
 ```
-yarn api --seed Alice balances transfer 5FmE1Adpwp1bT1oY95w59RiSPVu9QwzBGjKsE2hxemD2AFs8 1000
+yarn api balances transfer 5FmE1Adpwp1bT1oY95w59RiSPVu9QwzBGjKsE2hxemD2AFs8 1000
 ```
 
 - Fetching an account balance from the Edgeware Testnet
@@ -32,5 +44,5 @@ yarn api -r edgeware balances freeBalance 5H7Jk4UDwZ3JkfbcrX2NprfZYaPJknApeqjisw
 
 - Registering an identity
 ```
-yarn api --seed Alice identity register github drewstone
+yarn api identity register github drewstone
 ```
