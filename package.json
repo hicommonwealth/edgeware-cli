@@ -7,7 +7,11 @@
     "dist/"
   ],
   "dependencies": {
-    "@polkadot/api": "^0.46.7"
+    "@polkadot/api": "^0.49.1",
+    "@polkadot/keyring": "^0.39.1",
+    "@polkadot/rpc-provider": "^0.49.1",
+    "@polkadot/util": "^0.39.1",
+    "dotenv": "^7.0.0"
   },
   "scripts": {
     "test": "mocha -r ts-node/register tests/**/*.spec.ts",

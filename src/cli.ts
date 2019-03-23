@@ -1,5 +1,5 @@
 #!/usr/bin/env ts-node
-
+require('dotenv').config();
 import { version } from '../package.json';
 const fs = require('fs');
 const program = require('commander');
@@ -139,24 +139,21 @@ program.version(version)
           process.exit(0);
         }
 
-        if (typeof program.seed === 'undefined') {
-          console.error('\nNo account seed provided!\n');
+        if (typeof process.env.MNEMONIC_PHRASE === 'undefined' || typeof process.env.DERIVATION_PATH === 'undefined') {
+          console.error('\nNo seed phrase provided!\n');
           program.outputHelp();
           process.exit(1);
         }
 
         console.log(`Making tx: ${mod}.${func}("${args}")`);
-        const keyring = new Keyring();
-        // TODO: make sure seed is properly formatted (32 byte hex string)
-        const seedStr = program.seed.padEnd(32, ' ');
-        const seed = isHex(program.seed) ? hexToU8a(seedStr) : stringToU8a(seedStr);
-        const user = keyring.addFromSeed(seed);
+        const keyring = new Keyring({ type: 'sr25519' });
+        const pair = keyring.addFromUri(`${process.env.MNEMONIC_PHRASE}${process.env.DERIVATION_PATH}`);
         if (mod === 'upgradeKey' && func === 'upgrade') {
           const wasm = fs.readFileSync(args[0]).toString('hex');
           args = [`0x${wasm}`];
         }
         const cArgs: CodecArg[] = args;
-        return combineLatest(of(false), api.tx[mod][func](...cArgs).signAndSend(user));
+        return combineLatest(of(false), api.tx[mod][func](...cArgs).signAndSend(pair));
       }
     }))
     .subscribe(([didQuery, result]: [boolean, any]) => {
@@ -184,7 +181,6 @@ program.version(version)
       process.exit(1);
     });
   })
-  .option('-s, --seed <key>', 'Public/private keypair seed')
   .option('-r, --remoteNode <url>', 'Remote node url (default: "localhost:9944").')
   .option('-T, --types', 'Print types instead of performing action.')
   .option('-t, --tail', 'Tail output rather than exiting immediately.');
