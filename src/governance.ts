@@ -1,16 +1,12 @@
-import { AccountId, Null, u32, Text, u64, Moment } from '@polkadot/types';
+import { AccountId, Null, u32, Text, u64, Moment, Bytes } from '@polkadot/types';
 import { EnumType, Struct, Vector, Tuple } from '@polkadot/types/codec';
 
 export class Signaling extends Null { }
-export class Funding extends u32 { }
-export class Upgrade extends Null { }
 
-export class ProposalCategory extends EnumType<Signaling | Funding | Upgrade> {
+export class ProposalCategory extends EnumType<Signaling> {
   constructor (value?: string, index?: number) {
       super({
           signaling: Signaling,
-          funding: Funding,
-          upgrade: Upgrade,
     }, value, index);
   }
 }
@@ -76,8 +72,6 @@ export class ProposalRecord extends Struct {
 
 export const GovernanceTypes = {
   Signaling,
-  Funding,
-  Upgrade,
   PreVoting,
   Voting,
   Completed,
@@ -85,4 +79,6 @@ export const GovernanceTypes = {
   ProposalComment,
   ProposalCategory,
   ProposalRecord,
+  ProposalTitle: Bytes,
+  ProposalContent: Bytes,
 };
