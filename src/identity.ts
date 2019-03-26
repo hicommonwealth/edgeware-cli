@@ -68,14 +68,7 @@ export class IdentityRecord extends Struct {
   }
 }
 
-// Old types that aren't used anymore (kept for backwards compatability)
-const ArchivedTypes = {
-  IdentityIndex: u32,
-  Claim: Bytes,
-};
-
-// Current types
-const CurrentTypes = {
+export const IdentityTypes = {
   IdentityStage,
   IdentityRecord,
   MetadataRecord,
@@ -83,5 +76,3 @@ const CurrentTypes = {
   Attestation: Bytes,
   Identity: Bytes,
 };
-
-export const IdentityTypes = { ...ArchivedTypes, ...CurrentTypes };
