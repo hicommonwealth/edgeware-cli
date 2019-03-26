@@ -21,16 +21,12 @@ export class VoteStage extends EnumType<PreVoting | Commit | Voting | Completed>
 
 export class Binary extends Null { }
 export class MultiOption extends Null { }
-export class AnonymousRing extends Null { }
-export class AnonymousMerkle extends Null { }
 
-export class VoteType extends EnumType<Binary | MultiOption | AnonymousRing | AnonymousMerkle> {
+export class VoteType extends EnumType<Binary | MultiOption> {
   constructor (value?: string, index?: number) {
     super({
       binary: Binary,
       multioption: MultiOption,
-      anonymousring: AnonymousRing,
-      anonymousmerkle: AnonymousMerkle,
     }, value, index);
   }
 }
@@ -119,8 +115,6 @@ export const VotingTypes = {
   VoteStage,
   Binary,
   MultiOption,
-  AnonymousRing,
-  AnonymousMerkle,
   VoteType,
   OnePerson,
   OneCoin,
