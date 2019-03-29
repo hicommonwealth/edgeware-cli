@@ -4,6 +4,7 @@ import { version } from '../package.json';
 const fs = require('fs');
 const program = require('commander');
 import Keyring from '@polkadot/keyring';
+import { isHex, hexToU8a, stringToU8a } from '@polkadot/util';
 import { CodecArg } from '@polkadot/types/types';
 import { ApiRx } from '@polkadot/api';
 import { WsProvider } from '@polkadot/rpc-provider';
@@ -138,15 +139,33 @@ program.version(version)
           process.exit(0);
         }
 
-        if (typeof process.env.MNEMONIC_PHRASE === 'undefined' || typeof process.env.DERIVATION_PATH === 'undefined') {
+        if (typeof program.seed === 'undefined' && (
+            typeof process.env.MNEMONIC_PHRASE === 'undefined' ||
+            typeof process.env.DERIVATION_PATH === 'undefined'
+        )) {
           console.error('\nNo seed phrase provided!\n');
           program.outputHelp();
           process.exit(1);
         }
 
+        let pair;
+        // Passing in mnemonic and derivation path will be interpreted as ed25519 key
+        if (typeof program.seed === 'undefined') {
+          const keyring = new Keyring({ type: 'ed25519' });
+          pair = keyring.addFromUri(`${process.env.MNEMONIC_PHRASE}${process.env.DERIVATION_PATH}`);
+        } else {
+          // Make it work for simple seeds like `Alice` as well as hex seeds using sr25519
+          const keyring = new Keyring({ type: 'sr25519' });
+          if (isHex(program.seed)) {
+            pair = keyring.addFromUri(`\/\/${program.seed}`);
+          } else {
+            pair = keyring.addFromUri(`${program.seed}`);
+          }
+        }
+
+        console.log(pair.address())
         console.log(`Making tx: ${mod}.${func}("${args}")`);
-        const keyring = new Keyring({ type: 'sr25519' });
-        const pair = keyring.addFromUri(`${process.env.MNEMONIC_PHRASE}${process.env.DERIVATION_PATH}`);
+
         if (mod === 'upgradeKey' && func === 'upgrade') {
           const wasm = fs.readFileSync(args[0]).toString('hex');
           args = [`0x${wasm}`];
@@ -180,6 +199,7 @@ program.version(version)
       process.exit(1);
     });
   })
+  .option('-s, --seed <hexSeed>', 'A seed for signing transactions')
   .option('-r, --remoteNode <url>', 'Remote node url (default: "localhost:9944").')
   .option('-T, --types', 'Print types instead of performing action.')
   .option('-t, --tail', 'Tail output rather than exiting immediately.');
