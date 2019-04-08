@@ -6,7 +6,7 @@ const program = require('commander');
 import Keyring from '@polkadot/keyring';
 import { isHex, hexToU8a, stringToU8a } from '@polkadot/util';
 import { CodecArg } from '@polkadot/types/types';
-import { ApiRx } from '@polkadot/api';
+import { ApiRx, SubmittableResult } from '@polkadot/api';
 import { WsProvider } from '@polkadot/rpc-provider';
 import { IdentityTypes } from './edgeware-node-types/types/identity';
 import { VotingTypes } from './edgeware-node-types/types/voting';
@@ -163,7 +163,7 @@ program.version(version)
           }
         }
 
-        console.log(pair.address())
+        console.log(pair.address());
         console.log(`Making tx: ${mod}.${func}("${args}")`);
 
         if (mod === 'upgradeKey' && func === 'upgrade') {
@@ -174,7 +174,7 @@ program.version(version)
         return combineLatest(of(false), api.tx[mod][func](...cArgs).signAndSend(pair));
       }
     }))
-    .subscribe(([didQuery, result]: [boolean, any]) => {
+    .subscribe(([didQuery, result]: [boolean, SubmittableResult]) => {
       if (didQuery) {
         console.log(JSON.stringify(result));
         if (!tailing) {
@@ -182,10 +182,10 @@ program.version(version)
         }
       } else {
         // Log transfer events
-        console.log('Transfer status:', result.type);
+        console.log('Transfer status:', result.status.type);
         // Log system events once the transfer is finalised
-        if (result.type === 'Finalised') {
-          console.log('Completed at block hash', result.status.asFinalised.toHex());
+        if (result.status.isFinalized) {
+          console.log('Completed at block hash', result.status.asFinalized.toHex());
 
           console.log('Events:');
           result.events.forEach(({ phase, event: { data, method, section } }) => {
