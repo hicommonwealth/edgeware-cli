@@ -182,10 +182,10 @@ program.version(version)
         }
       } else {
         // Log transfer events
-        console.log('Transfer status:', result.type);
+        console.log('Transfer status:', result.status.type);
         // Log system events once the transfer is finalised
-        if (result.type === 'Finalised') {
-          console.log('Completed at block hash', result.status.asFinalised.toHex());
+        if (result.status.type === 'Finalized') {
+          console.log('Completed at block hash', result.status.value.toHex());
 
           console.log('Events:');
           result.events.forEach(({ phase, event: { data, method, section } }) => {
