@@ -6,7 +6,7 @@ const program = require('commander');
 import Keyring from '@polkadot/keyring';
 import { isHex, hexToU8a, stringToU8a } from '@polkadot/util';
 import { CodecArg } from '@polkadot/types/types';
-import { ApiRx } from '@polkadot/api';
+import { ApiRx, SubmittableResult } from '@polkadot/api';
 import { WsProvider } from '@polkadot/rpc-provider';
 import { IdentityTypes } from './edgeware-node-types/types/identity';
 import { VotingTypes } from './edgeware-node-types/types/voting';
@@ -163,7 +163,7 @@ program.version(version)
           }
         }
 
-        console.log(pair.address())
+        console.log(pair.address());
         console.log(`Making tx: ${mod}.${func}("${args}")`);
 
         if (mod === 'upgradeKey' && func === 'upgrade') {
@@ -174,7 +174,7 @@ program.version(version)
         return combineLatest(of(false), api.tx[mod][func](...cArgs).signAndSend(pair));
       }
     }))
-    .subscribe(([didQuery, result]: [boolean, any]) => {
+    .subscribe(([didQuery, result]: [boolean, SubmittableResult]) => {
       if (didQuery) {
         console.log(JSON.stringify(result));
         if (!tailing) {
@@ -186,7 +186,6 @@ program.version(version)
         // Log system events once the transfer is finalised
         if (result.status.type === 'Finalized') {
           console.log('Completed at block hash', result.status.value.toHex());
-
           console.log('Events:');
           result.events.forEach(({ phase, event: { data, method, section } }) => {
           console.log('\t', phase.toString(), `: ${section}.${method}`, data.toString());
