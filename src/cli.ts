@@ -4,13 +4,13 @@ import { version } from '../package.json';
 const fs = require('fs');
 const program = require('commander');
 import Keyring from '@polkadot/keyring';
-import { isHex, hexToU8a, stringToU8a } from '@polkadot/util';
+import { isHex } from '@polkadot/util';
 import { CodecArg } from '@polkadot/types/types';
 import { ApiRx, SubmittableResult } from '@polkadot/api';
 import { WsProvider } from '@polkadot/rpc-provider';
-import { IdentityTypes } from './edgeware-node-types/types/identity';
-import { VotingTypes } from './edgeware-node-types/types/voting';
-import { GovernanceTypes } from './edgeware-node-types/types/governance';
+import { IdentityTypes } from 'edgeware-node-types/dist/identity';
+import { VotingTypes } from 'edgeware-node-types/dist/voting';
+import { GovernanceTypes } from 'edgeware-node-types/dist/governance';
 import { ApiOptions } from '@polkadot/api/types';
 import { switchMap } from 'rxjs/operators';
 import { of, combineLatest } from 'rxjs';
@@ -44,7 +44,7 @@ const isTx = (api: ApiRx, mod: string, func: string) => {
 };
 
 const txType = (api: ApiRx, mod: string, func: string) => {
-  const args = api.tx[mod][func].meta.arguments;
+  const args = api.tx[mod][func].meta.args;
   let result = `tx.${mod}.${func}: (`;
   args.forEach((t) => {
     result += t.name + ': ' + t.type + ', ';
