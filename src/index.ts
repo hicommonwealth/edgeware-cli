@@ -209,8 +209,9 @@ program.on('--help', () => {
   console.log('');
   console.log('Examples (TODO):');
   console.log(`  ${execName} --seed Alice identity register github drewstone\n`);
-  console.log(`  ${execName} --seed Alice balances transfer 5FmE1Adpwp1bT1oY95w59RiSPVu9QwzBGjKsE2hxemD2AFs8 1000\n`);
-  console.log(`  ${execName} -r "testnode.edgewa.re" balances freeBalance 5H7Jk4UDwZ3JkfbcrX2NprfZYaPJknApeqjiswKJPBPt6LRN\n`);
+  console.log(`  ${execName} --seed Alice balances transfer 5CyT7JeJnCSwXopxPRWM1o3rLXz6WDisq1mkqX4eq7SSzLKX 1000\n`);
+  console.log(`  ${execName} -r testnode.edgewa.re balances freeBalance `
+              + `5CyT7JeJnCSwXopxPRWM1o3rLXz6WDisq1mkqX4eq7SSzLKX\n`);
 });
 
 program.parse(process.argv);

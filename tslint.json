@@ -5,6 +5,7 @@
     ],
     "jsRules": {},
     "rules": {
+        "no-var-requires": false,
     	"quotemark": [true, "single"],
         "indent": [true, "spaces", 2],
         "no-console": false,

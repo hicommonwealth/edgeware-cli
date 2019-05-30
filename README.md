@@ -15,7 +15,7 @@ DERIVATION_PATH=//Alice
 ```
 
 ## Usage
-1. Install the node modules with `yarn` or `npm`
+1. Install the package with `yarn` or `npm`
 2. If you want to send transactions, have the hex format of a key ready.
 3. Call `edge <module> <func> [...args]` with the desired module function and args.
 
@@ -34,15 +34,15 @@ Options:
 ## Examples
 - Transfering tokens from one's balance
 ```
-yarn api balances transfer 5FmE1Adpwp1bT1oY95w59RiSPVu9QwzBGjKsE2hxemD2AFs8 1000
+edge balances transfer 5FmE1Adpwp1bT1oY95w59RiSPVu9QwzBGjKsE2hxemD2AFs8 1000
 ```
 
 - Fetching an account balance from the Edgeware Testnet
 ```
-yarn api -r edgeware balances freeBalance 5H7Jk4UDwZ3JkfbcrX2NprfZYaPJknApeqjiswKJPBPt6LRN
+edge -r testnode.edgewa.re balances freeBalance 5FmE1Adpwp1bT1oY95w59RiSPVu9QwzBGjKsE2hxemD2AFs8
 ```
 
 - Registering an identity
 ```
-yarn api identity register github drewstone
+edge identity register github drewstone
 ```
