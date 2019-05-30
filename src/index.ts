@@ -3,6 +3,7 @@ require('dotenv').config();
 import { version } from '../package.json';
 const fs = require('fs');
 const program = require('commander');
+const path = require('path');
 import Keyring from '@polkadot/keyring';
 import { isHex } from '@polkadot/util';
 import { CodecArg } from '@polkadot/types/types';
@@ -73,8 +74,9 @@ function initApiRx(remoteNodeUrl?: string) {
   return api;
 }
 
+const execName = path.basename(process.argv[1]);
 program.version(version)
-  .name('edge')
+  .name(execName)
   .usage('<module> <function> [ARGS...]')
   .arguments('<mod> <func> [args...]')
   .action(async (mod: string, func: string, args: string[]) => {
@@ -206,9 +208,9 @@ program.version(version)
 program.on('--help', () => {
   console.log('');
   console.log('Examples (TODO):');
-  console.log('  edge --seed Alice identity register github drewstone\n');
-  console.log('  edge --seed Alice balances transfer 5FmE1Adpwp1bT1oY95w59RiSPVu9QwzBGjKsE2hxemD2AFs8 1000\n');
-  console.log('  edge -r "testnode.edgewa.re" balances freeBalance 5H7Jk4UDwZ3JkfbcrX2NprfZYaPJknApeqjiswKJPBPt6LRN\n');
+  console.log(`  ${execName} --seed Alice identity register github drewstone\n`);
+  console.log(`  ${execName} --seed Alice balances transfer 5FmE1Adpwp1bT1oY95w59RiSPVu9QwzBGjKsE2hxemD2AFs8 1000\n`);
+  console.log(`  ${execName} -r "testnode.edgewa.re" balances freeBalance 5H7Jk4UDwZ3JkfbcrX2NprfZYaPJknApeqjiswKJPBPt6LRN\n`);
 });
 
 program.parse(process.argv);

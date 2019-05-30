@@ -17,7 +17,7 @@ DERIVATION_PATH=//Alice
 ## Usage
 1. Install the node modules with `yarn` or `npm`
 2. If you want to send transactions, have the hex format of a key ready.
-3. Call `yarn api <module> <func> [...args]` with the desired module function and args.
+3. Call `edge <module> <func> [...args]` with the desired module function and args.
 
 ## Options
 ```
