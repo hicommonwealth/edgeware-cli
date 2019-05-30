@@ -3,6 +3,10 @@
   "version": "0.3.14",
   "license": "GPL-3.0",
   "main": "dist/index.js",
+  "bin": {
+    "edge": "./bin/edge"
+  },
+  "preferGlobal": true,
   "files": [
     "src/",
     "tests/"
@@ -10,21 +14,20 @@
   "dependencies": {
     "@polkadot/api": "^0.79.0-beta.31",
     "dotenv": "^7.0.0",
-    "edgeware-node-types": "^1.0.1"
+    "edgeware-node-types": "^1.0.1",
+    "commander": "^2.19.0",
+    "ts-node": "^7.0.1"
   },
   "scripts": {
     "test": "mocha -r ts-node/register tests/**/*.spec.ts",
-    "api": "ts-node src/cli.ts",
     "lint": "tslint -c tslint.json 'src/**/*.ts'"
   },
   "devDependencies": {
     "@types/chai": "^4.1.7",
     "@types/mocha": "^5.2.5",
     "chai": "^4.2.0",
-    "commander": "^2.19.0",
     "mocha": "^5.2.0",
     "reflect-metadata": "^0.1.12",
-    "ts-node": "^7.0.1",
     "tslint": "^5.12.0",
     "typescript": "^3.2.2",
     "typings": "^2.1.1"

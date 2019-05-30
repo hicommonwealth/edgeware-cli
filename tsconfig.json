@@ -2,10 +2,11 @@
   "compilerOptions": {
     "allowJs": true,
     "target": "esnext",
+    "sourceMap": true,
     "moduleResolution": "node",
     "module": "commonjs",
     "allowSyntheticDefaultImports": true,
-    "outDir": "./build",
+    "outDir": "./dist",
     "baseUrl": "./src/scripts",
     "resolveJsonModule": true
   },
@@ -13,8 +14,7 @@
     "./src/*"
   ],
   "exclude": [
-    "./src/cli.ts",
-    "./src/util.ts",
+    "**/*.spec.ts",
     "./node_modules"
   ]
 }
