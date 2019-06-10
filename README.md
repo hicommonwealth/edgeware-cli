@@ -16,8 +16,9 @@ DERIVATION_PATH=//Alice
 
 ## Usage
 1. Install the package with `yarn` or `npm`
-2. If you want to send transactions, have the hex format of a key ready.
-3. Call `edge <module> <func> [...args]` with the desired module function and args.
+2. If you run into errors, run `tsc` in the repo to compile the typescript.
+3. If you want to send transactions, have the hex format of a key ready.
+4. Call `edge <module> <func> [...args]` with the desired module function and args.
 
 ## Options
 ```
