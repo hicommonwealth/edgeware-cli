@@ -15,7 +15,7 @@ import { GovernanceTypes } from 'edgeware-node-types/dist/governance';
 import { ApiOptions } from '@polkadot/api/types';
 import { switchMap } from 'rxjs/operators';
 import { of, combineLatest } from 'rxjs';
-import { ValidatorPrefs, Compact } from '@polkadot/types';
+import { ValidatorPrefs, Vector } from '@polkadot/types';
 
 const EDGEWARE_TESTNET_PUBLIC_CONN = '18.223.143.102:9944';
 
@@ -180,6 +180,10 @@ program.version(version)
             unstakeThreshold: Number(args[0]),
             validatorPayment: Number(args[1]),
           })];
+        }
+
+        if (mod === 'staking' && func === 'nominate') {
+          console.log(cArgs);
         }
 
         return combineLatest(of(false), api.tx[mod][func](...cArgs).signAndSend(pair));
