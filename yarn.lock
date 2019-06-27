@@ -199,6 +199,18 @@
   resolved "https://registry.yarnpkg.com/@types/deasync/-/deasync-0.1.0.tgz#b2bd6c3fcde3cf67b8be4c2f70136ba8f157b45a"
   integrity sha512-jxUH53LtGvbIL3TX2hD/XQuAgYJeATtx9kDXq5XtCZrWQABsiCQPjWi/KQXECUF+p9FuR6/tawnEDjXlEr4rFA==
 
+"@types/filesystem@^0.0.29":
+  version "0.0.29"
+  resolved "https://registry.yarnpkg.com/@types/filesystem/-/filesystem-0.0.29.tgz#ee3748eb5be140dcf980c3bd35f11aec5f7a3748"
+  integrity sha512-85/1KfRedmfPGsbK8YzeaQUyV1FQAvMPMTuWFQ5EkLd2w7szhNO96bk3Rh/SKmOfd9co2rCLf0Voy4o7ECBOvw==
+  dependencies:
+    "@types/filewriter" "*"
+
+"@types/filewriter@*":
+  version "0.0.28"
+  resolved "https://registry.yarnpkg.com/@types/filewriter/-/filewriter-0.0.28.tgz#c054e8af4d9dd75db4e63abc76f885168714d4b3"
+  integrity sha1-wFTor02d11205jq8dviFFocU1LM=
+
 "@types/memoizee@^0.4.2":
   version "0.4.2"
   resolved "https://registry.yarnpkg.com/@types/memoizee/-/memoizee-0.4.2.tgz#a500158999a8144a9b46cf9a9fb49b15f1853573"

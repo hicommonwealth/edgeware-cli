@@ -6,6 +6,8 @@
     "moduleResolution": "node",
     "module": "commonjs",
     "allowSyntheticDefaultImports": true,
+    "esModuleInterop": true,
+    "experimentalDecorators": true,
     "outDir": "./dist",
     "baseUrl": "./src/scripts",
     "resolveJsonModule": true

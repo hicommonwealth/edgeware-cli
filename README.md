@@ -14,6 +14,12 @@ MNEMONIC_PHRASE="bottom drive obey lake curtain smoke basket hold race lonely fi
 DERIVATION_PATH=//Alice
 ```
 
+## Build
+1. Requires: typescript version 3.2 or later, node version 12.3 or later
+2. Clone the git repo.
+3. Build by running `tsc` in the cloned repo.
+4. Run with `./bin/edge`.
+
 ## Usage
 1. Install the package with `yarn` or `npm`
 2. If you run into errors, run `tsc` in the repo to compile the typescript.

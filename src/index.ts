@@ -24,7 +24,7 @@ const isQuery = (api: ApiRx, mod: string, func: string) => {
 };
 
 const queryType = (api: ApiRx, mod: string, func: string) => {
-  const t = api.query[mod][func].meta.type;
+  const t = api.query[mod][func].creator.meta.type;
   if (t.isMap) {
     return `query.${mod}.${func}: ` + t.asMap.key.toString() + ' -> ' + t.asMap.value.toString();
   } else {
