@@ -16,6 +16,7 @@ import { ApiOptions } from '@polkadot/api/types';
 import { switchMap } from 'rxjs/operators';
 import { of, combineLatest } from 'rxjs';
 import { ValidatorPrefs, Compact } from '@polkadot/types';
+import { KeyringPair } from '@polkadot/keyring/types';
 
 const EDGEWARE_TESTNET_PUBLIC_CONN = '18.223.143.102:9944';
 
@@ -151,7 +152,7 @@ program.version(version)
           process.exit(1);
         }
 
-        let pair;
+        let pair: KeyringPair;
         // Passing in mnemonic and derivation path will be interpreted as ed25519 key
         if (typeof program.seed === 'undefined') {
           const keyring = new Keyring({ type: 'ed25519' });
@@ -166,7 +167,7 @@ program.version(version)
           }
         }
 
-        console.log(pair.address());
+        console.log(pair.address);
         console.log(`Making tx: ${mod}.${func}("${args}")`);
 
         if (mod === 'upgradeKey' && func === 'upgrade') {
