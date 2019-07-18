@@ -1,6 +1,6 @@
 {
   "name": "edgeware-cli",
-  "version": "0.1.6",
+  "version": "0.1.7",
   "license": "GPL-3.0",
   "main": "dist/index.js",
   "bin": {
@@ -17,7 +17,7 @@
     "@types/filesystem": "^0.0.29",
     "commander": "^2.19.0",
     "dotenv": "^7.0.0",
-    "edgeware-node-types": "^1.0.4",
+    "edgeware-node-types": "^1.0.5",
     "ts-node": "^7.0.1"
   },
   "scripts": {
