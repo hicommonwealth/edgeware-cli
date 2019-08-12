@@ -16,7 +16,8 @@ import { ApiOptions } from '@polkadot/api/types';
 import { switchMap } from 'rxjs/operators';
 import { of, combineLatest } from 'rxjs';
 import { KeyringPair } from '@polkadot/keyring/types';
-import { createType } from '@polkadot/types';
+import { createType, Type } from '@polkadot/types';
+import { createTypeUnsafe } from '@polkadot/types/codec/createType';
 
 const EDGEWARE_TESTNET_PUBLIC_CONN = '18.223.143.102:9944';
 
@@ -70,6 +71,7 @@ function initApiRx(remoteNodeUrl?: string) {
       ...IdentityTypes,
       ...GovernanceTypes,
       ...VotingTypes,
+      BlockNumber: 'u64', Index: 'u64', // fix substrate type swaps
     },
   };
   const api = new ApiRx(options);
@@ -81,7 +83,30 @@ program.version(version)
   .name(execName)
   .usage('<module> <function> [ARGS...]')
   .arguments('<mod> <func> [args...]')
-  .action(async (mod: string, func: string, args: string[]) => {
+  .action(async (mod: string, func: string, args: any[]) => {
+    const listing = (func.toLowerCase() === 'list');
+    const tailing = !!program.tail;
+    const argfile = program.argfile;
+    if (argfile) {
+      try {
+        const filedata = fs.readFileSync(argfile);
+        if (mod === 'upgradeKey' && func === 'upgrade') {
+          const wasm = argfile.toString('hex');
+          args = [`0x${wasm}`];
+        } else {
+          const jsondata = JSON.parse(filedata.toString('utf8'));
+          if (Array.isArray(jsondata)) {
+            args = jsondata;
+          } else {
+            throw new Error('Arg file must be array');
+          }
+        }
+      } catch (e) {
+        console.error('Unable to use arg file: ' + e.message);
+        process.exit(-1);
+      }
+    }
+
     if (typeof program.remoteNode === 'undefined') {
       console.error('Defaulting to local node 127.0.0.1:9944');
       program.remoteNode = 'ws://127.0.0.1:9944';
@@ -90,9 +115,6 @@ program.version(version)
     } else if (program.remoteNode.indexOf(':') === -1) {
       program.remoteNode += ':9944';
     }
-
-    const listing = (func.toLowerCase() === 'list');
-    const tailing = !!program.tail;
 
     const apiObservable = await initApiRx(program.remoteNode).isReady;
     apiObservable.pipe(switchMap((api: ApiRx) => {
@@ -123,7 +145,7 @@ program.version(version)
           process.exit(0);
         }
 
-        console.log(`Making query: ${mod}.${func}("${args}")`);
+        console.log(`Making query: ${mod}.${func}(${JSON.stringify(args)})`);
         const cArgs: CodecArg[] = args;
         return combineLatest(of(true), api.query[mod][func](...cArgs));
       }
@@ -133,7 +155,7 @@ program.version(version)
           console.log(deriveType(api, mod, func));
           process.exit(0);
         }
-        console.log(`Making query: ${mod}.${func}("${args}")`);
+        console.log(`Making query: ${mod}.${func}(${JSON.stringify(args)})`);
         const cArgs: CodecArg[] = args;
         return combineLatest(of(true), api.derive[mod][func](...cArgs));
       }
@@ -167,21 +189,8 @@ program.version(version)
           }
         }
 
-        console.log(pair.address);
-        console.log(`Making tx: ${mod}.${func}("${args}")`);
-
-        if (mod === 'upgradeKey' && func === 'upgrade') {
-          const wasm = fs.readFileSync(args[0]).toString('hex');
-          args = [`0x${wasm}`];
-        }
-
-        let cArgs: CodecArg[] = args;
-        if (mod === 'staking' && func === 'validate') {
-          cArgs = [createType('ValidatorPrefs', {
-            unstakeThreshold: Number(args[0]),
-            validatorPayment: Number(args[1]),
-          })];
-        }
+        console.log(`Making tx: ${mod}.${func}(${JSON.stringify(args)})`);
+        const cArgs: CodecArg[] = args;
         return combineLatest(of(false), api.tx[mod][func](...cArgs).signAndSend(pair));
       }
     }))
@@ -209,6 +218,7 @@ program.version(version)
       process.exit(1);
     });
   })
+  .option('-A, --argfile <file>', 'A JSON-formatted file containing an array of args')
   .option('-s, --seed <hexSeed>', 'A seed for signing transactions')
   .option('-r, --remoteNode <url>', 'Remote node url (default: "localhost:9944").')
   .option('-T, --types', 'Print types instead of performing action.')
