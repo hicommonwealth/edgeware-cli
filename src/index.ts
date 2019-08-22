@@ -18,7 +18,7 @@ import { of, combineLatest } from 'rxjs';
 import { KeyringPair } from '@polkadot/keyring/types';
 import { Type } from '@polkadot/types';
 
-const EDGEWARE_TESTNET_PUBLIC_CONN = '18.223.143.102:9944';
+const EDGEWARE_TESTNET_PUBLIC_CONN = 'testnet1.edgewa.re';
 
 const isQuery = (api: ApiRx, mod: string, func: string) => {
   return api.query[mod] && !!api.query[mod][func];
@@ -60,7 +60,7 @@ function initApiRx(remoteNodeUrl?: string) {
     remoteNodeUrl = 'ws://localhost:9944';
   }
 
-  if (remoteNodeUrl.indexOf('ws://') === -1) {
+  if (remoteNodeUrl.indexOf('ws://') === -1 && remoteNodeUrl.indexOf('wss://') === -1) {
     remoteNodeUrl = `ws://${remoteNodeUrl}`;
   }
 
@@ -110,9 +110,7 @@ program.version(version)
       console.error('Defaulting to local node 127.0.0.1:9944');
       program.remoteNode = 'ws://127.0.0.1:9944';
     } else if (program.remoteNode === 'edgeware') {
-      program.remoteNode = `ws://${EDGEWARE_TESTNET_PUBLIC_CONN}`;
-    } else if (program.remoteNode.indexOf(':') === -1) {
-      program.remoteNode += ':9944';
+      program.remoteNode = `wss://${EDGEWARE_TESTNET_PUBLIC_CONN}`;
     }
 
     const apiObservable = await initApiRx(program.remoteNode).isReady;
