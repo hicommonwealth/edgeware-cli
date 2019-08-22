@@ -11,13 +11,12 @@ import { ApiRx, SubmittableResult } from '@polkadot/api';
 import { WsProvider } from '@polkadot/rpc-provider';
 import { IdentityTypes } from 'edgeware-node-types/dist/identity';
 import { VotingTypes } from 'edgeware-node-types/dist/voting';
-import { GovernanceTypes } from 'edgeware-node-types/dist/governance';
+import { SignalingTypes } from 'edgeware-node-types/dist/signaling';
 import { ApiOptions } from '@polkadot/api/types';
 import { switchMap } from 'rxjs/operators';
 import { of, combineLatest } from 'rxjs';
 import { KeyringPair } from '@polkadot/keyring/types';
-import { createType, Type } from '@polkadot/types';
-import { createTypeUnsafe } from '@polkadot/types/codec/createType';
+import { Type } from '@polkadot/types';
 
 const EDGEWARE_TESTNET_PUBLIC_CONN = '18.223.143.102:9944';
 
@@ -69,7 +68,7 @@ function initApiRx(remoteNodeUrl?: string) {
     provider : new WsProvider(remoteNodeUrl),
     types : {
       ...IdentityTypes,
-      ...GovernanceTypes,
+      ...SignalingTypes,
       ...VotingTypes,
       BlockNumber: 'u64', Index: 'u64', // fix substrate type swaps
     },
