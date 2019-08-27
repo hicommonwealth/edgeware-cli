@@ -16,7 +16,6 @@ import { ApiOptions } from '@polkadot/api/types';
 import { switchMap } from 'rxjs/operators';
 import { of, combineLatest } from 'rxjs';
 import { KeyringPair } from '@polkadot/keyring/types';
-import { Type } from '@polkadot/types';
 
 const EDGEWARE_TESTNET_PUBLIC_CONN = 'testnet1.edgewa.re';
 
@@ -29,7 +28,11 @@ const queryType = (api: ApiRx, mod: string, func: string) => {
   if (t.isMap) {
     return `query.${mod}.${func}: ` + t.asMap.key.toString() + ' -> ' + t.asMap.value.toString();
   } else {
-    return `query.${mod}.${func}: ` + t.asType.toString();
+    try {
+      return `query.${mod}.${func}: ` + t.asType.toString();
+    } catch (e) {
+      return `query.${mod}.${func}: ${t.asDoubleMap.toString()}`;
+    }
   }
 };
 
@@ -70,7 +73,6 @@ function initApiRx(remoteNodeUrl?: string) {
       ...IdentityTypes,
       ...SignalingTypes,
       ...VotingTypes,
-      BlockNumber: 'u64', Index: 'u64', // fix substrate type swaps
     },
   };
   const api = new ApiRx(options);
