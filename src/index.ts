@@ -16,8 +16,11 @@ import { ApiOptions } from '@polkadot/api/types';
 import { switchMap } from 'rxjs/operators';
 import { of, combineLatest } from 'rxjs';
 import { KeyringPair } from '@polkadot/keyring/types';
+import { Keys, ValidatorPrefs0to145 } from '@polkadot/types/interfaces';
+import { Compact, Struct, createTypeUnsafe } from '@polkadot/types';
 
-const EDGEWARE_TESTNET_PUBLIC_CONN = 'testnet1.edgewa.re';
+
+const EDGEWARE_TESTNET_PUBLIC_CONN = 'testnet3.edgewa.re';
 
 const isQuery = (api: ApiRx, mod: string, func: string) => {
   return api.query[mod] && !!api.query[mod][func];
@@ -67,6 +70,10 @@ function initApiRx(remoteNodeUrl?: string) {
     remoteNodeUrl = `ws://${remoteNodeUrl}`;
   }
 
+  if (remoteNodeUrl.indexOf('9944') === -1) {
+    remoteNodeUrl = `${remoteNodeUrl}:9944`;
+  }
+
   const options: ApiOptions = {
     provider : new WsProvider(remoteNodeUrl),
     types : {
@@ -112,7 +119,7 @@ program.version(version)
       console.error('Defaulting to local node 127.0.0.1:9944');
       program.remoteNode = 'ws://127.0.0.1:9944';
     } else if (program.remoteNode === 'edgeware') {
-      program.remoteNode = `wss://${EDGEWARE_TESTNET_PUBLIC_CONN}`;
+      program.remoteNode = `ws://${EDGEWARE_TESTNET_PUBLIC_CONN}:9944`;
     }
 
     const apiObservable = await initApiRx(program.remoteNode).isReady;
@@ -189,7 +196,18 @@ program.version(version)
         }
 
         console.log(`Making tx: ${mod}.${func}(${JSON.stringify(args)})`);
-        const cArgs: CodecArg[] = args;
+        let cArgs: CodecArg[] = args;
+        if (mod === 'session' && func === 'setKeys') {
+          const keys: Keys = args[0].split(',').map(k => (new Keyring()).encodeAddress(k));
+          const proof: Uint8Array = new Uint8Array();
+          cArgs = [keys, proof];
+          console.log(cArgs);
+        } else if (mod === 'staking' && func === 'validate') {
+          cArgs = [{
+            unstakeThreshold: args[0],
+            validatorPayment: args[1],
+          }];
+        }
         return combineLatest(of(false), api.tx[mod][func](...cArgs).signAndSend(pair));
       }
     }))
