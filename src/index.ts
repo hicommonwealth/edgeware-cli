@@ -1,6 +1,5 @@
 #!/usr/bin/env ts-node
 require('dotenv').config();
-import { version } from '../package.json';
 const fs = require('fs');
 const program = require('commander');
 const path = require('path');
@@ -19,6 +18,14 @@ import { KeyringPair } from '@polkadot/keyring/types';
 import { Keys, ValidatorPrefs0to145 } from '@polkadot/types/interfaces';
 import { Compact, Struct, createTypeUnsafe } from '@polkadot/types';
 
+let version = 'unknown';
+if (fs.existsSync(__dirname + '/../package.json')) {
+    version = require(__dirname + '/../package.json').version;
+} else if (fs.existsSync(__dirname + '/../../package.json')) {
+    version = require(__dirname + '/../../package.json');
+} else {
+    console.error('Could not locate package.json');
+}
 
 const EDGEWARE_TESTNET_PUBLIC_CONN = 'testnet3.edgewa.re';
 

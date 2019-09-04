@@ -1,2 +1,15 @@
 #!/usr/bin/env node
-require('../dist/src/index')
+
+const fs = require('fs');
+
+try {
+  if (fs.existsSync(__dirname + '/../dist/src/index.js')) {
+    require(__dirname + '/../dist/src/index');
+  } else {
+    const root = require('child_process').execSync('npm root -g').toString().trim()
+    require(root + '/edgeware-cli/dist/src/index');
+  }
+} catch (e) {
+  console.error('Installation error: ' + e.message);
+  process.exit(e.code);
+}
