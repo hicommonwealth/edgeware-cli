@@ -3,11 +3,11 @@
 const fs = require('fs');
 
 try {
-  if (fs.existsSync(__dirname + '/../dist/src/index.js')) {
-    require(__dirname + '/../dist/src/index');
+  if (fs.existsSync(__dirname + '/../dist/index.js')) {
+    require(__dirname + '/../dist/index');
   } else {
     const root = require('child_process').execSync('npm root -g').toString().trim()
-    require(root + '/edgeware-cli/dist/src/index');
+    require(root + '/edgeware-cli/dist/index');
   }
 } catch (e) {
   console.error('Installation error: ' + e.message);

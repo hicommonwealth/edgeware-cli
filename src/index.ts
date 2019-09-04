@@ -3,6 +3,8 @@ require('dotenv').config();
 const fs = require('fs');
 const program = require('commander');
 const path = require('path');
+const version = require('../package.json').version;
+
 import Keyring from '@polkadot/keyring';
 import { isHex } from '@polkadot/util';
 import { CodecArg } from '@polkadot/types/types';
@@ -15,17 +17,7 @@ import { ApiOptions } from '@polkadot/api/types';
 import { switchMap } from 'rxjs/operators';
 import { of, combineLatest } from 'rxjs';
 import { KeyringPair } from '@polkadot/keyring/types';
-import { Keys, ValidatorPrefs0to145 } from '@polkadot/types/interfaces';
-import { Compact, Struct, createTypeUnsafe } from '@polkadot/types';
-
-let version = 'unknown';
-if (fs.existsSync(__dirname + '/../package.json')) {
-    version = require(__dirname + '/../package.json').version;
-} else if (fs.existsSync(__dirname + '/../../package.json')) {
-    version = require(__dirname + '/../../package.json');
-} else {
-    console.error('Could not locate package.json');
-}
+import { Keys } from '@polkadot/types/interfaces';
 
 const EDGEWARE_TESTNET_PUBLIC_CONN = 'testnet3.edgewa.re';
 
