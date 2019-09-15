@@ -13,14 +13,12 @@ import { WsProvider } from '@polkadot/rpc-provider';
 import { IdentityTypes } from 'edgeware-node-types/dist/identity';
 import { VotingTypes } from 'edgeware-node-types/dist/voting';
 import { SignalingTypes } from 'edgeware-node-types/dist/signaling';
+import { TreasuryRewardTypes } from 'edgeware-node-types/dist/treasuryReward';
 import { ApiOptions } from '@polkadot/api/types';
 import { switchMap } from 'rxjs/operators';
 import { of, combineLatest } from 'rxjs';
 import { KeyringPair } from '@polkadot/keyring/types';
 import { Keys } from '@polkadot/types/interfaces';
-import { u128 } from '@polkadot/types';
-
-const EDGEWARE_TESTNET_PUBLIC_CONN = 'testnet3.edgewa.re';
 
 const isQuery = (api: ApiRx, mod: string, func: string) => {
   return api.query[mod] && !!api.query[mod][func];
@@ -73,7 +71,7 @@ function initApiRx(remoteNodeUrl: string): ApiRx {
       ...IdentityTypes,
       ...SignalingTypes,
       ...VotingTypes,
-      Balance2: u128,
+      ...TreasuryRewardTypes,
     },
   };
   const api = new ApiRx(options);
@@ -113,7 +111,9 @@ program.version(version)
       console.error('Defaulting to local node 127.0.0.1:9944');
       program.remoteNode = 'ws://127.0.0.1:9944';
     } else if (program.remoteNode === 'edgeware') {
-      program.remoteNode = `wss://${EDGEWARE_TESTNET_PUBLIC_CONN}`;
+      // pick a random node from mainnetX.edgewa.re where X = 1 thru 10
+      const nodeNumber = Math.floor((Math.random() * 9) + 1);
+      program.remoteNode = `wss://mainnet${nodeNumber}.edgewa.re`;
     }
 
     const apiObservable = initApiRx(program.remoteNode).isReady;
@@ -240,7 +240,7 @@ program.on('--help', () => {
   console.log('Examples (TODO):');
   console.log(`  ${execName} --seed //Alice identity register github drewstone\n`);
   console.log(`  ${execName} --seed //Alice balances transfer 5CyT7JeJnCSwXopxPRWM1o3rLXz6WDisq1mkqX4eq7SSzLKX 1000\n`);
-  console.log(`  ${execName} -r wss://testnet3.edgewa.re balances freeBalance `
+  console.log(`  ${execName} -r edgeware balances freeBalance `
               + `5CyT7JeJnCSwXopxPRWM1o3rLXz6WDisq1mkqX4eq7SSzLKX\n`);
 });
 
