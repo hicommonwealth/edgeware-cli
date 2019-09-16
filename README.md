@@ -46,7 +46,7 @@ edge balances transfer 5FmE1Adpwp1bT1oY95w59RiSPVu9QwzBGjKsE2hxemD2AFs8 1000
 
 - Fetching an account balance from the Edgeware Testnet
 ```
-edge -r testnode.edgewa.re balances freeBalance 5FmE1Adpwp1bT1oY95w59RiSPVu9QwzBGjKsE2hxemD2AFs8
+edge -r ws://testnet1.edgewa.re:9944 balances freeBalance 5FTyhanHHymJ2FQ2ZWMwhoKcUXuNcBfNaqufrFvwDR8Mf1mG
 ```
 
 - Registering an identity
