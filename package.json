@@ -1,6 +1,6 @@
 {
   "name": "edgeware-cli",
-  "version": "0.3.10",
+  "version": "0.3.11",
   "license": "GPL-3.0",
   "main": "dist/index.js",
   "bin": {
@@ -12,8 +12,8 @@
     "bin/"
   ],
   "dependencies": {
-    "@polkadot/api": "0.92.1",
-    "@polkadot/keyring": "^1.4.1",
+    "@polkadot/api": "^0.95.0-beta.25",
+    "@polkadot/keyring": "^1.5.1",
     "@types/filesystem": "^0.0.29",
     "commander": "^2.19.0",
     "dotenv": "^7.0.0",
