@@ -31,6 +31,7 @@ DERIVATION_PATH=//Alice
 
 Options:
   -V, --version           output the version number
+  -A, --argfile <file>    A JSON-formatted file containing an array of args
   -s, --seed <key>        Public/private keypair seed
   -r, --remoteNode <url>  Remote node url (default: "localhost:9944").
   -T, --types             Print types instead of performing action.
