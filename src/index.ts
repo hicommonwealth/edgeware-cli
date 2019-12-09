@@ -30,7 +30,7 @@ const queryType = (api: ApiRx, mod: string, func: string) => {
     return `query.${mod}.${func}: ` + t.asMap.key.toString() + ' -> ' + t.asMap.value.toString();
   } else {
     try {
-      return `query.${mod}.${func}: ` + t.asType.toString();
+      return `query.${mod}.${func}: ` + t.asPlain.toString();
     } catch (e) {
       return `query.${mod}.${func}: ${t.asDoubleMap.toString()}`;
     }
