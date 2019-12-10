@@ -201,13 +201,12 @@ program.version(version)
 
           const proof: CodecArg = '0x';
           cArgs = [keys, proof];
-          console.log(cArgs);
         } else if (mod === 'staking' && func === 'validate') {
           cArgs = [{
-            unstakeThreshold: args[0],
-            validatorPayment: args[1],
+            commission: args[0],
           }];
         }
+        console.log(cArgs);
         return combineLatest(of(false), api.tx[mod][func](...cArgs).signAndSend(pair));
       }
     }))
