@@ -192,8 +192,14 @@ program.version(version)
         console.log(`Making tx: ${mod}.${func}(${JSON.stringify(args)})`);
         let cArgs: CodecArg[] = args;
         if (mod === 'session' && func === 'setKeys') {
-          const keys: Keys = args[0].split(',').map(k => (new Keyring()).encodeAddress(k));
-          const proof: Uint8Array = new Uint8Array();
+          let keys: CodecArg;
+          if (args[0].indexOf(',') !== -1) {
+            keys = args[0].split(',').map(k => (new Keyring()).encodeAddress(k));
+          } else {
+            keys = args[0];
+          }
+
+          const proof: CodecArg = '0x';
           cArgs = [keys, proof];
           console.log(cArgs);
         } else if (mod === 'staking' && func === 'validate') {
