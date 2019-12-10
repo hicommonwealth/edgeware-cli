@@ -5,9 +5,11 @@ const program = require('commander');
 const path = require('path');
 const version = require('../package.json').version;
 
+import BN from 'bn.js';
 import Keyring from '@polkadot/keyring';
 import { isHex } from '@polkadot/util';
 import { CodecArg } from '@polkadot/types/types';
+import { Compact } from '@polkadot/types';
 import { ApiRx, SubmittableResult } from '@polkadot/api';
 import { WsProvider } from '@polkadot/rpc-provider';
 import { IdentityTypes } from 'edgeware-node-types/dist/identity';
@@ -19,6 +21,7 @@ import { switchMap } from 'rxjs/operators';
 import { of, combineLatest } from 'rxjs';
 import { KeyringPair } from '@polkadot/keyring/types';
 import { Keys } from '@polkadot/types/interfaces';
+import { Perbill } from '@polkadot/types/interfaces/runtime';
 
 const isQuery = (api: ApiRx, mod: string, func: string) => {
   return api.query[mod] && !!api.query[mod][func];
@@ -203,7 +206,7 @@ program.version(version)
           cArgs = [keys, proof];
         } else if (mod === 'staking' && func === 'validate') {
           cArgs = [{
-            commission: args[0],
+            commission: new BN(Number(args[0])),
           }];
         }
         console.log(cArgs);
