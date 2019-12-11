@@ -12,10 +12,7 @@ import { CodecArg } from '@polkadot/types/types';
 import { Compact } from '@polkadot/types';
 import { ApiRx, SubmittableResult } from '@polkadot/api';
 import { WsProvider } from '@polkadot/rpc-provider';
-import { IdentityTypes } from 'edgeware-node-types/dist/identity';
-import { VotingTypes } from 'edgeware-node-types/dist/voting';
-import { SignalingTypes } from 'edgeware-node-types/dist/signaling';
-import { TreasuryRewardTypes } from 'edgeware-node-types/dist/treasuryReward';
+import { EdgewareTypes } from 'edgeware-node-types/dist';
 import { ApiOptions } from '@polkadot/api/types';
 import { switchMap } from 'rxjs/operators';
 import { of, combineLatest } from 'rxjs';
@@ -71,10 +68,7 @@ function initApiRx(remoteNodeUrl: string): ApiRx {
   const options: ApiOptions = {
     provider : new WsProvider(remoteNodeUrl),
     types : {
-      ...IdentityTypes,
-      ...SignalingTypes,
-      ...VotingTypes,
-      ...TreasuryRewardTypes,
+      ...EdgewareTypes,
     },
   };
   const api = new ApiRx(options);
@@ -205,8 +199,14 @@ program.version(version)
           const proof: CodecArg = '0x';
           cArgs = [keys, proof];
         } else if (mod === 'staking' && func === 'validate') {
+          let commission = Number(args[0]);
+          if (commission <= 100 && commission >= 0) {
+            commission = Math.round(1000000000 * (commission * 1.0 / 100));
+          } else {
+            throw new Error('Arg must be a percentage value between 0 and 100');
+          }
           cArgs = [{
-            commission: new BN(Number(args[0])),
+            commission: new BN(commission),
           }];
         }
         console.log(cArgs);
