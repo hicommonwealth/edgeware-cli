@@ -5,6 +5,7 @@
     "moduleResolution": "node",
     "module": "commonjs",
     "esModuleInterop": true,
+    "allowSyntheticDefaultImports": true,
     "outDir": "./dist/"
   },
   "files": [

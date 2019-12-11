@@ -5,7 +5,6 @@ const program = require('commander');
 const path = require('path');
 const version = require('../package.json').version;
 
-import BN from 'bn.js';
 import Keyring from '@polkadot/keyring';
 import { isHex } from '@polkadot/util';
 import { CodecArg } from '@polkadot/types/types';
@@ -19,6 +18,7 @@ import { of, combineLatest } from 'rxjs';
 import { KeyringPair } from '@polkadot/keyring/types';
 import { Keys } from '@polkadot/types/interfaces';
 import { Perbill } from '@polkadot/types/interfaces/runtime';
+import argSwitcher from './argSwitcher';
 
 const isQuery = (api: ApiRx, mod: string, func: string) => {
   return api.query[mod] && !!api.query[mod][func];
@@ -188,27 +188,9 @@ program.version(version)
 
         console.log(`Making tx: ${mod}.${func}(${JSON.stringify(args)})`);
         let cArgs: CodecArg[] = args;
-        if (mod === 'session' && func === 'setKeys') {
-          let keys: CodecArg;
-          if (args[0].indexOf(',') !== -1) {
-            keys = args[0].split(',').map(k => (new Keyring()).encodeAddress(k));
-          } else {
-            keys = args[0];
-          }
-
-          const proof: CodecArg = '0x';
-          cArgs = [keys, proof];
-        } else if (mod === 'staking' && func === 'validate') {
-          let commission = Number(args[0]);
-          if (commission <= 100 && commission >= 0) {
-            commission = Math.round(1000000000 * (commission * 1.0 / 100));
-          } else {
-            throw new Error('Arg must be a percentage value between 0 and 100');
-          }
-          cArgs = [{
-            commission: new BN(commission),
-          }];
-        }
+        // Switch args into proper formats
+        // TODO: Update once Edgeware gets chain ID
+        cArgs = argSwitcher(mod, func, cArgs);
         console.log(cArgs);
         return combineLatest(of(false), api.tx[mod][func](...cArgs).signAndSend(pair));
       }
