@@ -1,3 +1,5 @@
+This repo has been deprecated for the time being.
+
 # edgeware-cli
 
 The edgeware CLI easily allows you to interact with a local or remote Edgeware node or any general substrate node. The api requires you to create a `.env` file with your keypair information, which will be described below.
