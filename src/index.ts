@@ -69,6 +69,9 @@ function initApiRx(remoteNodeUrl: string): ApiRx {
     provider : new WsProvider(remoteNodeUrl),
     types : {
       ...EdgewareTypes,
+      Address: 'GenericAddress',
+      BalanceLock: 'BalanceLockTo212',
+      Keys: 'SessionKeys4',
     },
   };
   const api = new ApiRx(options);
