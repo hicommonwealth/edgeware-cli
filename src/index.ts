@@ -189,7 +189,7 @@ program.version(version)
           }
         }
 
-        console.log(`Making tx: ${mod}.${func}(${JSON.stringify(args)})`);
+        console.log(`${pair.address} making tx: ${mod}.${func}(${JSON.stringify(args)})`);
         let cArgs: CodecArg[] = args;
         // Switch args into proper formats
         // TODO: Update once Edgeware gets chain ID
