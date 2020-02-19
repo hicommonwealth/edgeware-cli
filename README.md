@@ -52,8 +52,3 @@ edge balances transfer 5FmE1Adpwp1bT1oY95w59RiSPVu9QwzBGjKsE2hxemD2AFs8 1000
 ```
 edge -r ws://berlin1.edgewa.re:9944 balances account 5GrwvaEF5zXb26Fz9rcQpDWS57CtERHpNehXCPcNoHGKutQY
 ```
-
-- Registering an identity
-```
-edge identity register github drewstone
-```
