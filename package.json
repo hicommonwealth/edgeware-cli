@@ -19,7 +19,6 @@
     "dotenv": "^7.0.0",
     "edgeware-cli": "^0.6.1",
     "edgeware-node-types": "^1.1.0",
-    "global": "^4.4.0",
     "ts-node": "^7.0.1"
   },
   "scripts": {
