@@ -26,6 +26,9 @@ DERIVATION_PATH=//Alice
 3. If you want to send transactions, have the hex format of a key ready.
 4. Call `edge <module> <func> [...args]` with the desired module function and args.
 
+### Things to know
+Staking bond, unbond, and bondExtra amounts are in terms of EDG. The CLI handles the conversion by multiplying by 10^18 decimals.
+
 ## Options
 ```
 
