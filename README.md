@@ -26,6 +26,9 @@ DERIVATION_PATH=//Alice
 3. If you want to send transactions, have the hex format of a key ready.
 4. Call `edge <module> <func> [...args]` with the desired module function and args.
 
+### Things to know
+Staking bond, unbond, and bondExtra amounts are in terms of EDG. The CLI handles the conversion by multiplying by 10^18 decimals.
+
 ## Options
 ```
 
@@ -47,7 +50,7 @@ edge balances transfer 5FmE1Adpwp1bT1oY95w59RiSPVu9QwzBGjKsE2hxemD2AFs8 1000
 
 - Fetching an account balance from the Edgeware Testnet
 ```
-edge -r ws://testnet1.edgewa.re:9944 balances freeBalance 5FTyhanHHymJ2FQ2ZWMwhoKcUXuNcBfNaqufrFvwDR8Mf1mG
+edge -r ws://berlin1.edgewa.re:9944 balances account 5GrwvaEF5zXb26Fz9rcQpDWS57CtERHpNehXCPcNoHGKutQY
 ```
 
 - Registering an identity
