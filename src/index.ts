@@ -8,16 +8,14 @@ const version = require('../package.json').version;
 import Keyring from '@polkadot/keyring';
 import { isHex } from '@polkadot/util';
 import { CodecArg } from '@polkadot/types/types';
-import { Compact } from '@polkadot/types';
+import { TypeRegistry } from '@polkadot/types';
+import { DispatchError } from '@polkadot/types/interfaces';
 import { ApiRx, SubmittableResult } from '@polkadot/api';
 import { WsProvider } from '@polkadot/rpc-provider';
-import { EdgewareTypes } from 'edgeware-node-types/dist';
-import { ApiOptions } from '@polkadot/api/types';
+import * as EdgewareTypes from 'edgeware-node-types/interfaces/definitions';
 import { switchMap } from 'rxjs/operators';
 import { of, combineLatest } from 'rxjs';
 import { KeyringPair } from '@polkadot/keyring/types';
-import { Keys } from '@polkadot/types/interfaces';
-import { Perbill } from '@polkadot/types/interfaces/runtime';
 import argSwitcher from './argSwitcher';
 
 const isQuery = (api: ApiRx, mod: string, func: string) => {
@@ -59,22 +57,24 @@ const txType = (api: ApiRx, mod: string, func: string) => {
   return result + ') -> ()';
 };
 
-function initApiRx(remoteNodeUrl: string): ApiRx {
+function initApiRx(remoteNodeUrl: string, registry: TypeRegistry): ApiRx {
   if (remoteNodeUrl.indexOf('ws://') === -1 && remoteNodeUrl.indexOf('wss://') === -1) {
     // default to secure websocket if none provided
     remoteNodeUrl = `wss://${remoteNodeUrl}`;
   }
-
-  const options: ApiOptions = {
-    provider : new WsProvider(remoteNodeUrl),
-    types : {
-      ...EdgewareTypes,
-      Address: 'GenericAddress',
-      BalanceLock: 'BalanceLockTo212',
-      Keys: 'SessionKeys4',
+  const edgewareTypes = Object.values(EdgewareTypes)
+    // .map((v) => v.default)
+    .reduce((res, { types }): object => ({ ...res, ...types }), {});
+  const provider = new WsProvider(remoteNodeUrl);
+  const api = new ApiRx({
+    provider,
+    types: {
+      ...edgewareTypes,
+      'voting::VoteType': 'VoteType',
+      'voting::TallyType': 'TallyType',
     },
-  };
-  const api = new ApiRx(options);
+    registry,
+  });
   return api;
 }
 
@@ -116,7 +116,8 @@ program.version(version)
       program.remoteNode = `wss://mainnet${nodeNumber}.edgewa.re`;
     }
 
-    const apiObservable = initApiRx(program.remoteNode).isReady;
+    const registry = new TypeRegistry();
+    const apiObservable = initApiRx(program.remoteNode, registry).isReady;
     apiObservable.pipe(switchMap((api: ApiRx) => {
       // List the available actions then exit
       if (listing) {
@@ -212,7 +213,19 @@ program.version(version)
           console.log('Completed at block hash', result.status.value.toHex());
           console.log('Events:');
           result.events.forEach(({ phase, event: { data, method, section } }) => {
-          console.log('\t', phase.toString(), `: ${section}.${method}`, data.toString());
+            console.log('\t', phase.toString(), `: ${section}.${method}`, data.toString());
+            if (section === 'system') {
+              if (method === 'ExtrinsicSuccess') {
+                console.log('Confirmed!');
+              } else if (method === 'ExtrinsicFailed') {
+                console.log('Failed!');
+                const errorData = data[0] as DispatchError;
+                if (errorData.isModule) {
+                  const errorInfo = registry.findMetaError(errorData.asModule.toU8a());
+                  console.error(`${errorInfo.section}::${errorInfo.name}: ${errorInfo.documentation[0]}`);
+                }
+              }
+            }
           });
           process.exit(0);
         }
