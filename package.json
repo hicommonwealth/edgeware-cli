@@ -1,6 +1,6 @@
 {
-  "name": "edgeware-cli",
-  "version": "0.7.1",
+  "name": "@edgeware/cli",
+  "version": "0.7.3",
   "license": "GPL-3.0",
   "main": "dist/index.js",
   "bin": {
@@ -8,16 +8,16 @@
   },
   "preferGlobal": true,
   "files": [
-    "src/",
+    "dist/",
     "bin/"
   ],
   "dependencies": {
-    "@polkadot/api": "^1.22.1",
-    "@polkadot/keyring": "^2.17.1",
+    "@edgeware/node-types": "2.3.5",
+    "@polkadot/api": "^1.24.1",
+    "@polkadot/keyring": "^2.18.1",
     "@types/filesystem": "^0.0.29",
     "commander": "^2.19.0",
     "dotenv": "^7.0.0",
-    "edgeware-node-types": "2.3.3",
     "ts-node": "^7.0.1"
   },
   "scripts": {
@@ -33,5 +33,15 @@
     "tslint": "^5.12.0",
     "typescript": "^3.2.2",
     "typings": "^2.1.1"
-  }
+  },
+  "description": "The edgeware CLI easily allows you to interact with a local or remote Edgeware node or any general substrate node. The api requires you to create a `.env` file with your keypair information, which will be described below.",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/hicommonwealth/edgeware-cli.git"
+  },
+  "author": "jake@commonwealth.im",
+  "bugs": {
+    "url": "https://github.com/hicommonwealth/edgeware-cli/issues"
+  },
+  "homepage": "https://github.com/hicommonwealth/edgeware-cli#readme"
 }

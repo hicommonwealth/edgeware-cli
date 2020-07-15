@@ -5,6 +5,7 @@ const program = require('commander');
 const path = require('path');
 const version = require('../package.json').version;
 
+import * as EdgewareTypes from '@edgeware/node-types/interfaces/definitions';
 import Keyring from '@polkadot/keyring';
 import { isHex } from '@polkadot/util';
 import { CodecArg } from '@polkadot/types/types';
@@ -12,7 +13,6 @@ import { TypeRegistry } from '@polkadot/types';
 import { DispatchError } from '@polkadot/types/interfaces';
 import { ApiRx, SubmittableResult } from '@polkadot/api';
 import { WsProvider } from '@polkadot/rpc-provider';
-import * as EdgewareTypes from 'edgeware-node-types/interfaces/definitions';
 import { switchMap } from 'rxjs/operators';
 import { of, combineLatest } from 'rxjs';
 import { KeyringPair } from '@polkadot/keyring/types';
@@ -72,6 +72,13 @@ function initApiRx(remoteNodeUrl: string, registry: TypeRegistry): ApiRx {
       ...edgewareTypes,
       'voting::VoteType': 'VoteType',
       'voting::TallyType': 'TallyType',
+      Address: 'GenericAddress',
+      Keys: 'SessionKeys4',
+      StakingLedger: 'StakingLedgerTo223',
+      Votes: 'VotesTo230',
+      ReferendumInfo: 'ReferendumInfoTo239',
+      Weight: 'u32',
+      OpenTip: 'OpenTipTo225',
     },
     registry,
   });
@@ -198,6 +205,7 @@ program.version(version)
         console.log(cArgs);
         return combineLatest(of(false), api.tx[mod][func](...cArgs).signAndSend(pair));
       }
+      throw new Error('No action found.');
     }))
     .subscribe(([didQuery, result]: [boolean, SubmittableResult]) => {
       if (didQuery) {
