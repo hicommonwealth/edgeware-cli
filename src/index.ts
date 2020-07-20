@@ -17,12 +17,22 @@ import { switchMap } from 'rxjs/operators';
 import { of, combineLatest } from 'rxjs';
 import { KeyringPair } from '@polkadot/keyring/types';
 import argSwitcher from './argSwitcher';
+import { RpcRxResult } from '@polkadot/api/types';
 
 const isQuery = (api: ApiRx, mod: string, func: string) => {
-  return api.query[mod] && !!api.query[mod][func];
+  if (api.query[mod] && !!api.query[mod][func]) {
+    return 'query';
+  } else if (api.rpc[mod] && !!api.rpc[mod][func]) {
+    return 'rpc';
+  } else {
+    return null;
+  }
 };
 
-const queryType = (api: ApiRx, mod: string, func: string) => {
+const queryType = (api: ApiRx, mod: string, func: string, isRpc = false) => {
+  if (isRpc) {
+    return `rpc.${mod}.${func}`;
+  }
   const t = api.query[mod][func].creator.meta.type;
   if (t.isMap) {
     return `query.${mod}.${func}: ` + t.asMap.key.toString() + ' -> ' + t.asMap.value.toString();
@@ -134,28 +144,38 @@ program.version(version)
             console.log(queryType(api, mod, key));
           }
         }
+        if (api.rpc[mod]) {
+          console.log('\nRPC Queries:');
+          for (const key of Object.keys(api.rpc[mod])) {
+            console.log(queryType(api, mod, key, true));
+          }
+        }
         if (api.tx[mod]) {
           console.log('\nTransactions:');
           for (const key of Object.keys(api.tx[mod])) {
             console.log(txType(api, mod, key));
           }
         }
-        if (!api.tx[mod] && !api.query[mod]) {
+        if (!api.tx[mod] && !api.query[mod] && !api.rpc[mod]) {
           console.error(`No module ${mod} found.`);
           process.exit(1);
         } else {
           process.exit(0);
         }
       }
-      if (isQuery(api, mod, func)) {
+      const qType = isQuery(api, mod, func);
+      if (qType) {
         if (program.types) {
-          console.log(queryType(api, mod, func));
+          console.log(queryType(api, mod, func, qType === 'rpc'));
           process.exit(0);
         }
 
         console.log(`Making query: ${mod}.${func}(${JSON.stringify(args)})`);
         const cArgs: CodecArg[] = args;
-        return combineLatest(of(true), api.query[mod][func](...cArgs));
+        return combineLatest(
+          of(true),
+          (qType === 'rpc' ? api.rpc : api.query)[mod][func](...cArgs)
+        );
       }
 
       if (isDerive(api, mod, func)) {
