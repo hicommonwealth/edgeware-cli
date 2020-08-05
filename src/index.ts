@@ -5,7 +5,7 @@ const program = require('commander');
 const path = require('path');
 const version = require('../package.json').version;
 
-import * as EdgewareTypes from '@edgeware/node-types/interfaces/definitions';
+import { Mainnet, Beresheet } from '@edgeware/node-types';
 import Keyring from '@polkadot/keyring';
 import { isHex } from '@polkadot/util';
 import { CodecArg } from '@polkadot/types/types';
@@ -17,7 +17,6 @@ import { switchMap } from 'rxjs/operators';
 import { of, combineLatest } from 'rxjs';
 import { KeyringPair } from '@polkadot/keyring/types';
 import argSwitcher from './argSwitcher';
-import { RpcRxResult } from '@polkadot/api/types';
 
 const isQuery = (api: ApiRx, mod: string, func: string) => {
   if (api.query[mod] && !!api.query[mod][func]) {
@@ -67,30 +66,16 @@ const txType = (api: ApiRx, mod: string, func: string) => {
   return result + ') -> ()';
 };
 
-function initApiRx(remoteNodeUrl: string, registry: TypeRegistry): ApiRx {
+function initApiRx(remoteNodeUrl: string, types, registry: TypeRegistry): ApiRx {
   if (remoteNodeUrl.indexOf('ws://') === -1 && remoteNodeUrl.indexOf('wss://') === -1) {
     // default to secure websocket if none provided
     remoteNodeUrl = `wss://${remoteNodeUrl}`;
   }
-  const edgewareTypes = Object.values(EdgewareTypes)
-    // .map((v) => v.default)
-    .reduce((res, { types }): object => ({ ...res, ...types }), {});
   const provider = new WsProvider(remoteNodeUrl);
   const api = new ApiRx({
     provider,
-    types: {
-      ...edgewareTypes,
-      'voting::VoteType': 'VoteType',
-      'voting::TallyType': 'TallyType',
-      Address: 'GenericAddress',
-      Keys: 'SessionKeys4',
-      StakingLedger: 'StakingLedgerTo223',
-      Votes: 'VotesTo230',
-      ReferendumInfo: 'ReferendumInfoTo239',
-      Weight: 'u32',
-      OpenTip: 'OpenTipTo225',
-    },
     registry,
+    ...types,
   });
   return api;
 }
@@ -133,8 +118,16 @@ program.version(version)
       program.remoteNode = `wss://mainnet${nodeNumber}.edgewa.re`;
     }
 
+    if (typeof program.spec === 'undefined') {
+      program.spec = 'mainnet';
+    }
+    if (['mainnet', 'beresheet'].indexOf(program.spec) === -1) {
+      console.error('Invalid chain spec: ' + program.spec);
+      process.exit(-1);
+    }
+    const types = program.spec === 'beresheet' ? Beresheet : Mainnet;
     const registry = new TypeRegistry();
-    const apiObservable = initApiRx(program.remoteNode, registry).isReady;
+    const apiObservable = initApiRx(program.remoteNode, types, registry).isReady;
     apiObservable.pipe(switchMap((api: ApiRx) => {
       // List the available actions then exit
       if (listing) {
@@ -265,6 +258,7 @@ program.version(version)
   })
   .option('-A, --argfile <file>', 'A JSON-formatted file containing an array of args')
   .option('-s, --seed <hexSeed>', 'A seed for signing transactions')
+  .option('-S, --spec <mainnet | beresheet>', 'The chain spec on the selected node (default: mainnet)')
   .option('-r, --remoteNode <url>', 'Remote node url (default: "ws://localhost:9944").')
   .option('-T, --types', 'Print types instead of performing action.')
   .option('-t, --tail', 'Tail output rather than exiting immediately.');
