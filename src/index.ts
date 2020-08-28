@@ -214,7 +214,7 @@ program.version(version)
         let cArgs: CodecArg[] = args;
         // Switch args into proper formats
         // TODO: Update once Edgeware gets chain ID
-        cArgs = argSwitcher(mod, func, cArgs);
+        cArgs = argSwitcher(api, mod, func, cArgs);
         console.log(cArgs);
         return combineLatest(of(false), api.tx[mod][func](...cArgs).signAndSend(pair));
       }
