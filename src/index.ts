@@ -95,6 +95,9 @@ program.version(version)
         if (mod === 'upgradeKey' && func === 'upgrade') {
           const wasm = argfile.toString('hex');
           args = [`0x${wasm}`];
+        } else if (mod === 'contracts' && func === 'putCode') {
+          const byteCode = filedata.toString('hex');
+          args = [`0x${byteCode}`];
         } else {
           const jsondata = JSON.parse(filedata.toString('utf8'));
           if (Array.isArray(jsondata)) {
