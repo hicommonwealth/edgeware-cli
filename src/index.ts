@@ -75,7 +75,7 @@ function initApiRx(remoteNodeUrl: string, types, registry: TypeRegistry): ApiRx 
   const api = new ApiRx({
     provider,
     registry,
-    // ...types,
+    ...types,
   });
   return api;
 }

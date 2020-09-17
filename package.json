@@ -13,8 +13,8 @@
   ],
   "dependencies": {
     "@edgeware/node-types": "2.4.1",
-    "@polkadot/api": "^1.29.1",
-    "@polkadot/keyring": "^3.2.1",
+    "@polkadot/api": "^1.33.1",
+    "@polkadot/keyring": "^3.4.1",
     "@types/filesystem": "^0.0.29",
     "commander": "^2.19.0",
     "dotenv": "^7.0.0",
