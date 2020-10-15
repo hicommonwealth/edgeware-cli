@@ -89,6 +89,7 @@ program.version(version)
     const listing = (func.toLowerCase() === 'list');
     const tailing = !!program.tail;
     const argfile = program.argfile;
+    const blockNumber = program.blockNumber;
     if (argfile) {
       try {
         const filedata = fs.readFileSync(argfile);
@@ -166,12 +167,27 @@ program.version(version)
           process.exit(0);
         }
 
-        console.log(`Making query: ${mod}.${func}(${JSON.stringify(args)})`);
+        console.log(`Making query: ${mod}.${func}(${JSON.stringify(args)})${blockNumber ? (' at block ' + blockNumber) : ''}`);
         const cArgs: CodecArg[] = args;
-        return combineLatest(
-          of(true),
-          (qType === 'rpc' ? api.rpc : api.query)[mod][func](...cArgs)
-        );
+        if (blockNumber) {
+          if (qType === 'rpc') {
+            console.error('Historical RPC queries not supported.');
+            process.exit(1);
+          }
+          return api.rpc.chain.getBlockHash(blockNumber).pipe(
+            switchMap((hash) => {
+              return combineLatest([
+                of(true),
+                api.query[mod][func].at(hash, ...cArgs),
+              ])
+            })
+          )
+        } else {
+          return combineLatest([
+            of(true),
+            (qType === 'rpc' ? api.rpc : api.query)[mod][func](...cArgs)
+          ]);
+        }
       }
 
       if (isDerive(api, mod, func)) {
@@ -181,7 +197,7 @@ program.version(version)
         }
         console.log(`Making query: ${mod}.${func}(${JSON.stringify(args)})`);
         const cArgs: CodecArg[] = args;
-        return combineLatest(of(true), api.derive[mod][func](...cArgs));
+        return combineLatest([ of(true), api.derive[mod][func](...cArgs) ]);
       }
       if (isTx(api, mod, func)) {
         if (program.types) {
@@ -219,7 +235,7 @@ program.version(version)
         // TODO: Update once Edgeware gets chain ID
         cArgs = argSwitcher(api, mod, func, cArgs);
         console.log(cArgs);
-        return combineLatest(of(false), api.tx[mod][func](...cArgs).signAndSend(pair));
+        return combineLatest([ of(false), api.tx[mod][func](...cArgs).signAndSend(pair) ]);
       }
       throw new Error('No action found.');
     }))
@@ -259,6 +275,7 @@ program.version(version)
       process.exit(1);
     });
   })
+  .option('-b, --block <blockNumber>', 'A block number to query historical data at (must use archival node)')
   .option('-A, --argfile <file>', 'A JSON-formatted file containing an array of args')
   .option('-s, --seed <hexSeed>', 'A seed for signing transactions')
   .option('-S, --spec <mainnet | beresheet>', 'The chain spec on the selected node (default: mainnet)')
