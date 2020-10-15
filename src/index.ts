@@ -288,8 +288,8 @@ program.on('--help', () => {
   console.log('Examples:');
   console.log(`  ${execName} --seed //Alice identity register github drewstone\n`);
   console.log(`  ${execName} --seed //Alice balances transfer 5CyT7JeJnCSwXopxPRWM1o3rLXz6WDisq1mkqX4eq7SSzLKX 1000\n`);
-  console.log(`  ${execName} -r ws://testnet1.edgewa.re:9944 balances freeBalance `
-              + `5CyT7JeJnCSwXopxPRWM1o3rLXz6WDisq1mkqX4eq7SSzLKX\n`);
+  console.log(`  ${execName} -S beresheet -r wss://beresheet1.edgewa.re system account `
+              + `5GrwvaEF5zXb26Fz9rcQpDWS57CtERHpNehXCPcNoHGKutQY\n`);
 });
 
 program.parse(process.argv);

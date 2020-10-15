@@ -31,15 +31,14 @@ Staking bond, unbond, and bondExtra amounts are in terms of EDG. The CLI handles
 
 ## Options
 ```
-
-Options:
-  -V, --version           output the version number
-  -A, --argfile <file>    A JSON-formatted file containing an array of args
-  -s, --seed <key>        Public/private keypair seed
-  -r, --remoteNode <url>  Remote node url (default: "localhost:9944").
-  -T, --types             Print types instead of performing action.
-  -t, --tail              Tail output rather than exiting immediately.
-  -h, --help              output usage information
+  -V, --version               output the version number
+  -b, --block <blockNumber>   A block number to query historical data at (must use archival node)
+  -A, --argfile <file>        A JSON-formatted file containing an array of args
+  -s, --seed <key>            Public/private keypair seed
+  -r, --remoteNode <url>      Remote node url (default: "localhost:9944").
+  -T, --types                 Print types instead of performing action.
+  -t, --tail                  Tail output rather than exiting immediately.
+  -h, --help                  output usage information
 ```
 
 ## Examples
@@ -50,5 +49,5 @@ edge balances transfer 5FmE1Adpwp1bT1oY95w59RiSPVu9QwzBGjKsE2hxemD2AFs8 1000
 
 - Fetching an account balance from the Edgeware Testnet
 ```
-edge -r ws://berlin1.edgewa.re:9944 balances account 5GrwvaEF5zXb26Fz9rcQpDWS57CtERHpNehXCPcNoHGKutQY
+edge -S beresheet -r wss://beresheet1.edgewa.re system account 5GrwvaEF5zXb26Fz9rcQpDWS57CtERHpNehXCPcNoHGKutQY
 ```
