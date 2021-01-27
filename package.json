@@ -1,6 +1,6 @@
 {
   "name": "@edgeware/cli",
-  "version": "0.7.8",
+  "version": "0.8.0",
   "license": "GPL-3.0",
   "main": "dist/index.js",
   "bin": {
@@ -12,13 +12,12 @@
     "bin/"
   ],
   "dependencies": {
-    "@edgeware/node-types": "3.0.5",
-    "@polkadot/api": "2.0.1",
-    "@polkadot/keyring": "^3.5.1",
+    "@edgeware/node-types": "3.3.1",
+    "@polkadot/api": "3.6.4",
     "@types/filesystem": "^0.0.29",
     "commander": "^2.19.0",
     "dotenv": "^7.0.0",
-    "ts-node": "^7.0.1"
+    "ts-node": "^8.6.2"
   },
   "scripts": {
     "lint": "tslint -c tslint.json 'src/**/*.ts'",

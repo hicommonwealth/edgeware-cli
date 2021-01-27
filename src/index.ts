@@ -5,7 +5,7 @@ const program = require('commander');
 const path = require('path');
 const version = require('../package.json').version;
 
-import { Mainnet, Beresheet } from '@edgeware/node-types';
+import { spec } from '@edgeware/node-types';
 import Keyring from '@polkadot/keyring';
 import { isHex } from '@polkadot/util';
 import { CodecArg } from '@polkadot/types/types';
@@ -66,7 +66,7 @@ const txType = (api: ApiRx, mod: string, func: string) => {
   return result + ') -> ()';
 };
 
-function initApiRx(remoteNodeUrl: string, types, registry: TypeRegistry): ApiRx {
+function initApiRx(remoteNodeUrl: string, types): ApiRx {
   if (remoteNodeUrl.indexOf('ws://') === -1 && remoteNodeUrl.indexOf('wss://') === -1) {
     // default to secure websocket if none provided
     remoteNodeUrl = `wss://${remoteNodeUrl}`;
@@ -74,7 +74,6 @@ function initApiRx(remoteNodeUrl: string, types, registry: TypeRegistry): ApiRx 
   const provider = new WsProvider(remoteNodeUrl);
   const api = new ApiRx({
     provider,
-    registry,
     ...types,
   });
   return api;
@@ -89,7 +88,7 @@ program.version(version)
     const listing = (func.toLowerCase() === 'list');
     const tailing = !!program.tail;
     const argfile = program.argfile;
-    const blockNumber = program.blockNumber;
+    const blockNumber = program.block;
     if (argfile) {
       try {
         const filedata = fs.readFileSync(argfile);
@@ -122,17 +121,10 @@ program.version(version)
       program.remoteNode = `wss://mainnet${nodeNumber}.edgewa.re`;
     }
 
-    if (typeof program.spec === 'undefined') {
-      program.spec = 'mainnet';
-    }
-    if (['mainnet', 'beresheet'].indexOf(program.spec) === -1) {
-      console.error('Invalid chain spec: ' + program.spec);
-      process.exit(-1);
-    }
-    const types = program.spec === 'beresheet' ? Beresheet : Mainnet;
-    const registry = new TypeRegistry();
-    const apiObservable = initApiRx(program.remoteNode, types, registry).isReady;
-    apiObservable.pipe(switchMap((api: ApiRx) => {
+    let api: ApiRx;
+    const apiObservable = initApiRx(program.remoteNode, spec).isReady;
+    apiObservable.pipe(switchMap((apiReady: ApiRx) => {
+      api = apiReady;
       // List the available actions then exit
       if (listing) {
         if (api.query[mod]) {
@@ -195,7 +187,7 @@ program.version(version)
           console.log(deriveType(api, mod, func));
           process.exit(0);
         }
-        console.log(`Making query: ${mod}.${func}(${JSON.stringify(args)})`);
+        console.log(`Making derive query: ${mod}.${func}(${JSON.stringify(args)})`);
         const cArgs: CodecArg[] = args;
         return combineLatest([ of(true), api.derive[mod][func](...cArgs) ]);
       }
@@ -261,8 +253,10 @@ program.version(version)
                 console.log('Failed!');
                 const errorData = data[0] as DispatchError;
                 if (errorData.isModule) {
-                  const errorInfo = registry.findMetaError(errorData.asModule.toU8a());
-                  console.error(`${errorInfo.section}::${errorInfo.name}: ${errorInfo.documentation[0]}`);
+                  if (api) {
+                    const errorInfo = api.registry.findMetaError(errorData.asModule.toU8a());
+                    console.error(`${errorInfo.section}::${errorInfo.name}: ${errorInfo.documentation[0]}`);
+                  }
                 }
               }
             }
@@ -278,7 +272,6 @@ program.version(version)
   .option('-b, --block <blockNumber>', 'A block number to query historical data at (must use archival node)')
   .option('-A, --argfile <file>', 'A JSON-formatted file containing an array of args')
   .option('-s, --seed <hexSeed>', 'A seed for signing transactions')
-  .option('-S, --spec <mainnet | beresheet>', 'The chain spec on the selected node (default: mainnet)')
   .option('-r, --remoteNode <url>', 'Remote node url (default: "ws://localhost:9944").')
   .option('-T, --types', 'Print types instead of performing action.')
   .option('-t, --tail', 'Tail output rather than exiting immediately.');
@@ -288,7 +281,7 @@ program.on('--help', () => {
   console.log('Examples:');
   console.log(`  ${execName} --seed //Alice identity register github drewstone\n`);
   console.log(`  ${execName} --seed //Alice balances transfer 5CyT7JeJnCSwXopxPRWM1o3rLXz6WDisq1mkqX4eq7SSzLKX 1000\n`);
-  console.log(`  ${execName} -S beresheet -r wss://beresheet1.edgewa.re system account `
+  console.log(`  ${execName} -r wss://beresheet1.edgewa.re system account `
               + `5GrwvaEF5zXb26Fz9rcQpDWS57CtERHpNehXCPcNoHGKutQY\n`);
 });
 
