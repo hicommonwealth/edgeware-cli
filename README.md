@@ -15,7 +15,7 @@ DERIVATION_PATH=//Alice
 ```
 
 ## Build
-1. Requires: typescript version 3.2 or later, node version 12.3 or later
+1. Requires: typescript version 4.0 or later, node version 12.3 or later
 2. Clone the git repo.
 3. Build by running `tsc` in the cloned repo.
 4. Run with `./bin/edge`.
@@ -49,5 +49,5 @@ edge balances transfer 5FmE1Adpwp1bT1oY95w59RiSPVu9QwzBGjKsE2hxemD2AFs8 1000
 
 - Fetching an account balance from the Edgeware Testnet
 ```
-edge -S beresheet -r wss://beresheet1.edgewa.re system account 5GrwvaEF5zXb26Fz9rcQpDWS57CtERHpNehXCPcNoHGKutQY
+edge -r wss://beresheet1.edgewa.re system account 5GrwvaEF5zXb26Fz9rcQpDWS57CtERHpNehXCPcNoHGKutQY
 ```
