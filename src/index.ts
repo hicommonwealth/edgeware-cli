@@ -233,7 +233,7 @@ program.version(version)
     }))
     .subscribe(([didQuery, result]: [boolean, SubmittableResult]) => {
       if (didQuery) {
-        console.log(JSON.stringify(result));
+        console.log(JSON.stringify(result.toHuman()));
         if (!tailing) {
           process.exit(0);
         }
